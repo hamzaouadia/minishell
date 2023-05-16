@@ -35,8 +35,12 @@ size_t  ft_arg_len(char *str, char d)
     size_t len;
 
     len = 0;
-    while (str[len] && str[len] != d )
+    while (str[len] && str[len] != d)
+    {
+        if (str[len] == '|' && d == ' ')
+            break;
         len++;
+    }
     if (d == '"' || d == '\'')
         len = len + 2;
     return (len);    
@@ -100,7 +104,9 @@ int    command_argument(char *str, int i, t_argument *argument)
         argument->next = ft_lstnew(NULL);
         argument = argument->next;
     }
-    
+    if (str[i] == '|')
+        i++;
+    //printf("str[i] == %c\n", str[i]);
     return (i);
 }
 
