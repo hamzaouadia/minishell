@@ -22,6 +22,7 @@ t_command   *ft_cmndnew(char    *str)
     if (!command || !command->option || !command->argument)
         exit (0);
     command->cmnd = str;
+    command->pipe = '\0';
     command->next = NULL;
     command->option->opt = NULL;
     command->option->next = NULL;
@@ -30,14 +31,36 @@ t_command   *ft_cmndnew(char    *str)
     return (command);
 }
 
+size_t  ft_spchar_len(char *str, char d1, char d2)
+{
+    size_t  len;
+
+    len = 0;
+    if (!d1)
+        d1 = d2;
+    else if (!d2)
+        d2 = d1;
+    while (str[len] && (str[len] == d1 || str[len] == d2))
+    {
+        if (str[len] == '|')
+            break;
+        len++;
+    }
+    return (len);
+}
+
 size_t  ft_arg_len(char *str, char d)
 {
     size_t len;
 
     len = 0;
-    while (str[len] && str[len] != d)
+    while (str[len])
     {
-        if (str[len] == '|' && d == ' ')
+        if (d == ' ' && str[len] == d)
+            break;
+        if ((str[len + 1] == ' ' || str[len + 1] == '|' || str[len + 1] == '>' || str[len + 1] == '<') && str[len] == d)
+            break;
+        if ((str[len] == '|' || str[len] == '>' || str[len] == '<') && d == ' ')
             break;
         len++;
     }
@@ -86,15 +109,11 @@ int    command_argument(char *str, int i, t_argument *argument)
         if (str[i] == '\0' || str[i] == '|')
             break ;
         if (str[i] == '"')
-        {
             len = ft_arg_len(str + i + 1, '"');
-            printf("len 1 = %d\n", len);
-        }
         else if (str[i] == '\'')
-        {
-            printf("len 2 = %d\n", len);
             len = ft_arg_len(str + i + 1, '\'');
-        }
+        else if (str[i] == '<' || str[i] == '>')
+            len = ft_spchar_len(str + i, '<', '>');
         else
             len = ft_arg_len(str + i, ' ');
         argument->arg = malloc(sizeof(char) * (len + 1));
@@ -104,9 +123,6 @@ int    command_argument(char *str, int i, t_argument *argument)
         argument->next = ft_lstnew(NULL);
         argument = argument->next;
     }
-    if (str[i] == '|')
-        i++;
-    //printf("str[i] == %c\n", str[i]);
     return (i);
 }
 
@@ -140,6 +156,10 @@ t_command    *ft_command(char *str)
     i = 0;
     while (str[i])
     {
+        while (str[i] == ' ' || str[i] == '\t')
+            i++;
+        if (str[i] == '|')
+            line->pipe = str[i++];
         i = command_syntax(str, i, &line);
         line->next = ft_cmndnew(NULL);
         line = line->next;
@@ -161,6 +181,7 @@ int main(int ac, char **av, char **env)
         command = ft_command(readl);
         while (command->next)
         {
+            printf("command pipe     = %c\n", command->pipe);
             printf("command name     = %s\n", command->cmnd);
             printf("command option   = %s\n", command->option->opt);
             while (command->argument->next)

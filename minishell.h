@@ -21,6 +21,7 @@ typedef struct s_argument
 
 typedef struct  s_command
 {
+    char        pipe;
     char        *cmnd;
     t_option    *option;
     t_argument  *argument;
