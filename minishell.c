@@ -37,7 +37,7 @@ size_t  ft_arg_len(char *str, char d)
     len = 0;
     while (str[len] && str[len] != d )
         len++;
-    if (d == '"')
+    if (d == '"' || d == '\'')
         len = len + 2;
     return (len);    
 }
@@ -82,16 +82,23 @@ int    command_argument(char *str, int i, t_argument *argument)
         if (str[i] == '\0' || str[i] == '|')
             break ;
         if (str[i] == '"')
+        {
             len = ft_arg_len(str + i + 1, '"');
+            printf("len 1 = %d\n", len);
+        }
+        else if (str[i] == '\'')
+        {
+            printf("len 2 = %d\n", len);
+            len = ft_arg_len(str + i + 1, '\'');
+        }
         else
             len = ft_arg_len(str + i, ' ');
         argument->arg = malloc(sizeof(char) * (len + 1));
-        while (len > j)
+        while (len > j && str[i])
             argument->arg[j++] = str[i++];
         argument->arg[j] = '\0';
         argument->next = ft_lstnew(NULL);
         argument = argument->next;
-        i++;
     }
     
     return (i);
@@ -104,7 +111,7 @@ int    command_syntax(char *str, int i, t_command **command)
     
     j = 0;
     
-    while ((str[i] == ' ' || str[i] == '\t') && str[i])
+    while (str[i] == ' ' || str[i] == '\t')
         i++;
     len = ft_arg_len(str + i, ' ');
     (*command)->cmnd = malloc(sizeof(char) * (len + 1));
@@ -116,7 +123,7 @@ int    command_syntax(char *str, int i, t_command **command)
     return (i);
 }
 
-t_command    *ft_split_command(char *str)
+t_command    *ft_command(char *str)
 {
     t_command   *line;
     t_command   *head;
@@ -130,13 +137,12 @@ t_command    *ft_split_command(char *str)
         i = command_syntax(str, i, &line);
         line->next = ft_cmndnew(NULL);
         line = line->next;
-        i++;
     }
     
     return (head);
 }
 
-int main(int ac, char **av)
+int main(int ac, char **av, char **env)
 {
     char *readl;
     t_command *command;
@@ -146,7 +152,7 @@ int main(int ac, char **av)
     {
         readl = readline("minishell:$");
         add_history(readl);
-        command = ft_split_command(readl);
+        command = ft_command(readl);
         while (command->next)
         {
             printf("command name     = %s\n", command->cmnd);
