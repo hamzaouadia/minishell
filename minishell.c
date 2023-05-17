@@ -51,21 +51,29 @@ size_t  ft_spchar_len(char *str, char d1, char d2)
 
 size_t  ft_arg_len(char *str, char d)
 {
-    size_t len;
+    size_t  len;
+    int     i;
 
     len = 0;
-    while (str[len])
+    i = 1;
+    while (str[len] )
     {
-        if (d == ' ' && str[len] == d)
-            break;
-        if ((str[len + 1] == ' ' || str[len + 1] == '|' || str[len + 1] == '>' || str[len + 1] == '<') && str[len] == d)
-            break;
-        if ((str[len] == '|' || str[len] == '>' || str[len] == '<') && d == ' ')
+        if (str[len] == '"' || str[len] == '\'')
+            i++;
+        if (str[len] == d && d == ' ')
+            break;;
+        if (str[len] == d && (str[len + 1] == ' ' || str[len + 1] == '|' || str[len + 1] == '>' || str[len + 1] == '<' || str[len + 1] == '\0'))
+        {
+            if (i % 2 == 0)
+                break;
+        }
+        if (d == ' ' && (str[len] == '|' || str[len] == '>' || str[len] == '<'))
             break;
         len++;
     }
     if (d == '"' || d == '\'')
-        len = len + 2;
+        len += 2;
+    printf("len = %d\n", len);
     return (len);    
 }
 
@@ -108,10 +116,8 @@ int    command_argument(char *str, int i, t_argument *argument)
             i++;
         if (str[i] == '\0' || str[i] == '|')
             break ;
-        if (str[i] == '"')
-            len = ft_arg_len(str + i + 1, '"');
-        else if (str[i] == '\'')
-            len = ft_arg_len(str + i + 1, '\'');
+        if (str[i] == '"' || str[i] == '\'')
+            len = ft_arg_len(str + i + 1, str[i]);
         else if (str[i] == '<' || str[i] == '>')
             len = ft_spchar_len(str + i, '<', '>');
         else
