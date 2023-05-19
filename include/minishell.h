@@ -28,5 +28,6 @@ typedef struct  s_command
     struct  s_command   *next;
 }   t_command;
 
+t_command    *ft_command(char *str);
 
 #endif

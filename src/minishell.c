@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../include/minishell.h"
 
 t_argument  *ft_lstnew(void *arg)
 {
@@ -92,7 +92,7 @@ int    command_option(char *str, int i, t_option *option)
         len = ft_arg_len(str + i, ' ');
         if (str[i + 1] != 'n' || len > 2)
             return (rec);
-        option->opt = malloc(sizeof(char) * (len + 1));
+        option->opt = calloc((len + 1), sizeof(char));
         while (len > j)
         {
             option->opt[j++] = str[i];
@@ -122,7 +122,7 @@ int    command_argument(char *str, int i, t_argument *argument)
             len = ft_spchar_len(str + i, '<', '>');
         else
             len = ft_arg_len(str + i, ' ');
-        argument->arg = malloc(sizeof(char) * (len + 1));
+        argument->arg = calloc((len + 1), sizeof(char));
         while (len > j && str[i])
             argument->arg[j++] = str[i++];
         argument->arg[j] = '\0';
@@ -142,7 +142,7 @@ int    command_syntax(char *str, int i, t_command **command)
     while (str[i] == ' ' || str[i] == '\t')
         i++;
     len = ft_arg_len(str + i, ' ');
-    (*command)->cmnd = malloc(sizeof(char) * (len + 1));
+    (*command)->cmnd = calloc((len + 1), sizeof(char));
     while (len > j)
         (*command)->cmnd[j++] = str[i++];
     (*command)->cmnd[j] = '\0';
