@@ -56,12 +56,20 @@ size_t  ft_arg_len(char *str, char d)
 
     len = 0;
     i = 1;
-    while (str[len] )
+    if (d == ' ')
+        i = 0;
+    while (str[len])
     {
         if (str[len] == '"' || str[len] == '\'')
             i++;
-        if (str[len] == d && d == ' ')
-            break;;
+        if (str[len] == ' ' && d == ' ')
+        {
+            if (i % 2 == 0)
+            {
+                len++;
+                break;
+            }
+        }
         if (str[len] == d && (str[len + 1] == ' ' || str[len + 1] == '|' || str[len + 1] == '>' || str[len + 1] == '<' || str[len + 1] == '\0'))
         {
             if (i % 2 == 0)
@@ -73,7 +81,6 @@ size_t  ft_arg_len(char *str, char d)
     }
     if (d == '"' || d == '\'')
         len += 2;
-    printf("len = %d\n", len);
     return (len);    
 }
 
