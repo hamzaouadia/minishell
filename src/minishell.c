@@ -106,7 +106,7 @@ size_t  ft_opt_len(char *str, char d)
     i = 1;
     if (d == ' ')
         i = 0;
-    if (str[0] != '-')
+    if (str[0] != '-' || str[len] != 'n')
         return (0);
     while (str[len])
     {
@@ -128,7 +128,7 @@ size_t  ft_opt_len(char *str, char d)
         }
         if (d == ' ' && (str[len] == '|' || str[len] == '>' || str[len] == '<'))
             return (len);
-        if (str[len] != 'n')
+        if (str[len] != 'n' && str[len] != '"' && str[len] != '\'')
             return (0);
         len++;
     }
@@ -155,7 +155,7 @@ int    command_option(char *str, int i, t_option *option)
             len = ft_opt_len(str + i + 1, str[i]);
         else
             len = ft_opt_len(str + i, str[i - 1]);
-        if (len == 0)
+        if (len < 2)
             return (rec);
         option->opt = calloc((len + 1), sizeof(char));
         while (len > j)
