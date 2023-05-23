@@ -241,6 +241,48 @@ t_command    *ft_command(char *str)
     return (head);
 }
 
+void    ft_syntax_arg(t_argument *argument)
+{
+    int i;
+    char q;
+    
+    while(argument->next)
+    {
+        i = 0;
+        while (argument->arg[i])
+        {
+            if (argument->arg[i] == '"' || argument->arg[i] == '\'')
+            {
+                q = argument->arg[i++];
+                while (argument->arg[i] != q && argument->arg[i])
+                    i++;
+                if (argument->arg[i] == '\0')
+                {
+                    printf("-bash: syntax error\n");
+                    exit (0);
+                }    
+            }
+            i++;
+        }
+        argument = argument->next;
+    }
+}
+
+void    ft_syntax_error(t_command   *command)
+{
+
+    if (command->pipe != '\0')
+    {
+        printf("-bash: syntax error\n");
+        exit (0);
+    }
+    while (command->next)
+    {
+        ft_syntax_arg(command->argument);
+        command = command->next;
+    }
+}
+
 int main(int ac, char **av, char **env)
 {
     char *readl;
@@ -252,6 +294,7 @@ int main(int ac, char **av, char **env)
         readl = readline("minishell:$");
         add_history(readl);
         command = ft_command(readl);
+        ft_syntax_error(command);
         while (command->next)
         {
             printf("command pipe     = %c\n", command->pipe);
