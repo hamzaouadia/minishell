@@ -43,9 +43,9 @@ t_command   *ft_cmndnew(char    *str)
     return (command);
 }
 
-size_t  ft_spchar_len(char *str, char d1, char d2)
+int  ft_spchar_len(char *str, char d1, char d2)
 {
-    size_t  len;
+    int  len;
 
     len = 0;
     if (!d1)
@@ -53,65 +53,33 @@ size_t  ft_spchar_len(char *str, char d1, char d2)
     else if (!d2)
         d2 = d1;
     while (str[len] && (str[len] == d1 || str[len] == d2))
-    {
-        if (str[len] == '|')
-            break;
         len++;
-    }
     return (len);
 }
 
-size_t  ft_arg_len(char *str, char d)
+int  ft_arg_len(char *str)
 {
-    size_t  len;
-    int     i;
+    int  len;
+    char    q;
 
-    len = 0;
-    i = 1;
-    printf("-------hi!!-----|%c|---\n", d);
-    if (d == ' ')
-        i = 0;
-    while (str[len])
+    len = -1;
+    while (str[++len])
     {
         if (str[len] == '"' || str[len] == '\'')
         {
-            if (str[len] == d)
-                i++;
+            q = str[len++];
+            while (str[len] && str[len] != q)
+                len++;
         }
-        if (str[len] == ' ' && d == ' ')
-        {
-            printf("-------hi!!-----%d---\n", i);
-            if (i % 2 == 0 || i == 0)
-            {
-                if (i != 0)
-                    len++;
-                break;
-            }
-        }
-        if (str[len] == d && (str[len + 1] == ' ' || str[len + 1] == '|' || str[len + 1] == '>' || str[len + 1] == '<' || str[len + 1] == '\0'))
-        {
-            if (i % 2 == 0)
-                break;
-        }
-        if (d == ' ' && (str[len] == '|' || str[len] == '>' || str[len] == '<'))
-        {
-            if (i % 2 == 0 || i == 0)
-            {
-                if (i != 0)
-                    len++;
-                break;
-            }
-        }
-        len++;
+        if (str[len] == ' ' || str[len] == '|' || str[len] == '>' || str[len] == '<')
+            break;
     }
-    if (d == '"' || d == '\'')
-        len += 2;
     return (len);    
 }
 
-size_t  ft_opt_len(char *str, char d)
+int  ft_opt_len(char *str, char d)
 {
-    size_t  len;
+    int  len;
     int     i;
 
     len = 1;
@@ -171,11 +139,12 @@ int    command_option(char *str, int i, t_option *option)
             return (rec);
         option->opt = calloc((len + 1), sizeof(char));
         while (len > j)
-        {
-            option->opt[j++] = str[i];
-            i = i + 1;
-        }
+            option->opt[j++] = str[i++];
         option->opt[j] = '\0';
+        while (str[i] == ' ' || str[i] == '\t')
+            i++;
+        if (!str[i])
+            break;
         option->next = ft_lstnew_opt(NULL);
         option = option->next;
     }
@@ -188,33 +157,32 @@ int    command_argument(char *str, int i, t_argument *argument)
     int rec;
     int j;
 
-    while (str[i] && str[i] != '|')
+    while (str[i])
     {
         j = 0;
         while (str[i] == ' ' || str[i] == '\t')
             i++;
         if (str[i] == '\0' || str[i] == '|')
             break ;
-        if (str[i] == '"' || str[i] == '\'')
-        {
-            printf("%c\n", str[i]);
-            len = ft_arg_len(str + i + 1, str[i]);
-        }
         else if (str[i] == '<' || str[i] == '>')
             len = ft_spchar_len(str + i, '<', '>');
         else
-            len = ft_arg_len(str + i, ' ');
+            len = ft_arg_len(str + i);
         argument->arg = calloc((len + 1), sizeof(char));
-        while (len > j && str[i])
+        while (len > j)
             argument->arg[j++] = str[i++];
         argument->arg[j] = '\0';
+        while (str[i] == ' ' || str[i] == '\t')
+            i++;
+        if (!str[i])
+            break;
         argument->next = ft_lstnew_arg(NULL);
         argument = argument->next;
     }
     return (i);
 }
 
-int    command_syntax(char *str, int i, t_command **command)
+int    command_syntax(char *str, int i, t_command *command)
 {
     int len;
     int j;
@@ -223,13 +191,13 @@ int    command_syntax(char *str, int i, t_command **command)
     
     while (str[i] == ' ' || str[i] == '\t')
         i++;
-    len = ft_arg_len(str + i, ' ');
-    (*command)->cmnd = calloc((len + 1), sizeof(char));
+    len = ft_arg_len(str + i);
+    command->cmnd = calloc((len + 1), sizeof(char));
     while (len > j)
-        (*command)->cmnd[j++] = str[i++];
-    (*command)->cmnd[j] = '\0';
-    i = command_option(str , i, (*command)->option);
-    i = command_argument(str, i, (*command)->argument);
+        command->cmnd[j++] = str[i++];
+    command->cmnd[j] = '\0';
+    i = command_option(str , i, command->option);
+    i = command_argument(str, i, command->argument);
     return (i);
 }
 
@@ -248,7 +216,11 @@ t_command    *ft_command(char *str)
             i++;
         if (str[i] == '|')
             line->pipe = str[i++];
-        i = command_syntax(str, i, &line);
+        i = command_syntax(str, i, line);
+        while (str[i] == ' ' || str[i] == '\t')
+            i++;
+        if (!str[i])
+            break;
         line->next = ft_cmndnew(NULL);
         line = line->next;
     }
@@ -266,7 +238,7 @@ void    ft_syntax_red(char *str)
     if (i > 2 || (str[0] == '>' && str[1] == '<'))
     {
         printf("-bash: syntax error near unexpected token\n");
-        exit (0);
+        // exit (0);
     }
 }
 
@@ -286,7 +258,7 @@ void    ft_quotes_syntax(char *str)
             if (str[i] == '\0')
             {
                 printf("-bash: syntax error\n");
-                exit (0);
+                // exit (0);
             }    
         }
         i++;
@@ -296,15 +268,18 @@ void    ft_quotes_syntax(char *str)
 void    ft_syntax_arg(t_argument *argument)
 {
     
-    while(argument->next)
+    while(argument)
     {
         if (argument->arg[0] == '>' || argument->arg[0] == '<')
         {
             ft_syntax_red(argument->arg);
-            if ((argument->next->arg[0] == '>' || argument->next->arg[0] == '<'))
+            if (argument->next)
             {
-                printf("-bash: syntax error near unexpected token %c\n", argument->arg[0]);
-                exit (0);
+                if (argument->next->arg[0] == '>' || argument->next->arg[0] == '<')
+                {
+                    printf("-bash: syntax error near unexpected token %c\n", argument->arg[0]);
+                    // exit (0);
+                }
             }
         }
         ft_quotes_syntax(argument->arg);
@@ -318,9 +293,9 @@ void    ft_syntax_error(t_command   *command)
     if (command->pipe != '\0')
     {
         printf("-bash: syntax error\n");
-        exit (0);
+        // exit (0);
     }
-    while (command->next)
+    while (command)
     {
         ft_syntax_arg(command->argument);
         command = command->next;
@@ -339,16 +314,16 @@ int main(int ac, char **av, char **env)
         add_history(readl);
         command = ft_command(readl);
         ft_syntax_error(command);
-        while (command->next)
+        while (command)
         {
             printf("command pipe     = %c\n", command->pipe);
             printf("command name     = %s\n", command->cmnd);
-            while (command->option->next)
+            while (command->option)
             {
                 printf("command option   = %s\n", command->option->opt);
                 command->option = command->option->next;
             }
-            while (command->argument->next)
+            while (command->argument)
             {
                 printf("command argument = %s\n", command->argument->arg);
                 command->argument = command->argument->next;
