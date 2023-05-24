@@ -68,14 +68,19 @@ size_t  ft_arg_len(char *str, char d)
 
     len = 0;
     i = 1;
+    printf("-------hi!!-----|%c|---\n", d);
     if (d == ' ')
         i = 0;
     while (str[len])
     {
         if (str[len] == '"' || str[len] == '\'')
-            i++;
+        {
+            if (str[len] == d)
+                i++;
+        }
         if (str[len] == ' ' && d == ' ')
         {
+            printf("-------hi!!-----%d---\n", i);
             if (i % 2 == 0 || i == 0)
             {
                 if (i != 0)
@@ -89,7 +94,14 @@ size_t  ft_arg_len(char *str, char d)
                 break;
         }
         if (d == ' ' && (str[len] == '|' || str[len] == '>' || str[len] == '<'))
-            break;
+        {
+            if (i % 2 == 0 || i == 0)
+            {
+                if (i != 0)
+                    len++;
+                break;
+            }
+        }
         len++;
     }
     if (d == '"' || d == '\'')
@@ -128,7 +140,7 @@ size_t  ft_opt_len(char *str, char d)
         }
         if (d == ' ' && (str[len] == '|' || str[len] == '>' || str[len] == '<'))
             return (len);
-        if (str[len] != 'n' && str[len] != '"' && str[len] != '\'')
+        if (str[len] != 'n' && str[len] != '"' && str[len] != '\'' && str[len] != '\'')
             return (0);
         len++;
     }
@@ -184,7 +196,10 @@ int    command_argument(char *str, int i, t_argument *argument)
         if (str[i] == '\0' || str[i] == '|')
             break ;
         if (str[i] == '"' || str[i] == '\'')
+        {
+            printf("%c\n", str[i]);
             len = ft_arg_len(str + i + 1, str[i]);
+        }
         else if (str[i] == '<' || str[i] == '>')
             len = ft_spchar_len(str + i, '<', '>');
         else
@@ -241,29 +256,58 @@ t_command    *ft_command(char *str)
     return (head);
 }
 
-void    ft_syntax_arg(t_argument *argument)
+void    ft_syntax_red(char *str)
+{
+    int i;
+    char red;
+    
+    i = strlen(str);
+    red = str[i];
+    if (i > 2 || (str[0] == '>' && str[1] == '<'))
+    {
+        printf("-bash: syntax error near unexpected token\n");
+        exit (0);
+    }
+}
+
+void    ft_quotes_syntax(char *str)
 {
     int i;
     char q;
     
+    i = 0;
+    while (str[i])
+    {
+        if (str[i] == '"' || str[i] == '\'')
+         {
+            q = str[i++];
+            while (str[i] != q && str[i])
+                i++;
+            if (str[i] == '\0')
+            {
+                printf("-bash: syntax error\n");
+                exit (0);
+            }    
+        }
+        i++;
+    }
+}
+
+void    ft_syntax_arg(t_argument *argument)
+{
+    
     while(argument->next)
     {
-        i = 0;
-        while (argument->arg[i])
+        if (argument->arg[0] == '>' || argument->arg[0] == '<')
         {
-            if (argument->arg[i] == '"' || argument->arg[i] == '\'')
+            ft_syntax_red(argument->arg);
+            if ((argument->next->arg[0] == '>' || argument->next->arg[0] == '<'))
             {
-                q = argument->arg[i++];
-                while (argument->arg[i] != q && argument->arg[i])
-                    i++;
-                if (argument->arg[i] == '\0')
-                {
-                    printf("-bash: syntax error\n");
-                    exit (0);
-                }    
+                printf("-bash: syntax error near unexpected token %c\n", argument->arg[0]);
+                exit (0);
             }
-            i++;
         }
+        ft_quotes_syntax(argument->arg);
         argument = argument->next;
     }
 }
