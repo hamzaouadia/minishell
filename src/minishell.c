@@ -143,8 +143,6 @@ int    command_option(char *str, int i, t_option *option)
         option->opt[j] = '\0';
         while (str[i] == ' ' || str[i] == '\t')
             i++;
-        if (!str[i])
-            break;
         option->next = ft_lstnew_opt(NULL);
         option = option->next;
     }
@@ -174,8 +172,6 @@ int    command_argument(char *str, int i, t_argument *argument)
         argument->arg[j] = '\0';
         while (str[i] == ' ' || str[i] == '\t')
             i++;
-        if (!str[i])
-            break;
         argument->next = ft_lstnew_arg(NULL);
         argument = argument->next;
     }
@@ -219,8 +215,6 @@ t_command    *ft_command(char *str)
         i = command_syntax(str, i, line);
         while (str[i] == ' ' || str[i] == '\t')
             i++;
-        if (!str[i])
-            break;
         line->next = ft_cmndnew(NULL);
         line = line->next;
     }
@@ -266,9 +260,8 @@ void    ft_quotes_syntax(char *str)
 }
 
 void    ft_syntax_arg(t_argument *argument)
-{
-    
-    while(argument)
+{ 
+    while(argument->next)
     {
         if (argument->arg[0] == '>' || argument->arg[0] == '<')
         {
@@ -295,7 +288,7 @@ void    ft_syntax_error(t_command   *command)
         printf("-bash: syntax error\n");
         // exit (0);
     }
-    while (command)
+    while (command->next)
     {
         ft_syntax_arg(command->argument);
         command = command->next;
@@ -314,16 +307,16 @@ int main(int ac, char **av, char **env)
         add_history(readl);
         command = ft_command(readl);
         ft_syntax_error(command);
-        while (command)
+        while (command->next)
         {
             printf("command pipe     = %c\n", command->pipe);
             printf("command name     = %s\n", command->cmnd);
-            while (command->option)
+            while (command->option->next)
             {
                 printf("command option   = %s\n", command->option->opt);
                 command->option = command->option->next;
             }
-            while (command->argument)
+            while (command->argument->next)
             {
                 printf("command argument = %s\n", command->argument->arg);
                 command->argument = command->argument->next;
