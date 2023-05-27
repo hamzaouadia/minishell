@@ -1,27 +1,51 @@
 #include "../include/minishell.h"
 
+t_file  *ft_lstnew_file(void *fl)
+{
+    t_file  *file;
+
+    file = malloc(sizeof(t_file));
+    if (!file)
+        exit (0);
+    file->fl = fl;
+    file->next = NULL;
+    return (file);
+}
+
+t_red  *ft_lstnew_red(void *rd)
+{
+    t_red  *red;
+
+    red = malloc(sizeof(t_red));
+    if (!red)
+        exit (0);
+    red->rd = rd;
+    red->next = NULL;
+    return (red);
+}
+
 t_option  *ft_lstnew_opt(void *opt)
 {
-    t_option  *list;
+    t_option  *option;
 
-    list = malloc(sizeof(t_option));
-    if (!list)
+    option = malloc(sizeof(t_option));
+    if (!option)
         exit (0);
-    list->opt = opt;
-    list->next = NULL;
-    return (list);
+    option->opt = opt;
+    option->next = NULL;
+    return (option);
 }
 
 t_argument  *ft_lstnew_arg(void *arg)
 {
-    t_argument  *list;
+    t_argument  *argument;
 
-    list = malloc(sizeof(t_argument));
-    if (!list)
+    argument = malloc(sizeof(t_argument));
+    if (!argument)
         exit (0);
-    list->arg = arg;
-    list->next = NULL;
-    return (list);
+    argument->arg = arg;
+    argument->next = NULL;
+    return (argument);
 }
 
 t_command   *ft_cmndnew(char    *str)
@@ -29,17 +53,15 @@ t_command   *ft_cmndnew(char    *str)
     t_command   *command;
 
     command = malloc(sizeof(t_command));
-    command->option = malloc(sizeof(t_option));
-    command->argument = malloc(sizeof(t_argument));
-    if (!command || !command->option || !command->argument)
+    if (!command)
         exit (0);
     command->cmnd = str;
     command->pipe = '\0';
     command->next = NULL;
-    command->option->opt = NULL;
-    command->option->next = NULL;
-    command->argument->arg = NULL;
-    command->argument->next = NULL;
+    command->file = ft_lstnew_file(NULL);
+    command->red = ft_lstnew_red(NULL);
+    command->option = ft_lstnew_opt(NULL);
+    command->argument = ft_lstnew_arg(NULL);
     return (command);
 }
 
@@ -143,6 +165,8 @@ int    command_option(char *str, int i, t_option *option)
         option->opt[j] = '\0';
         while (str[i] == ' ' || str[i] == '\t')
             i++;
+        if (!str[i])
+            break;
         option->next = ft_lstnew_opt(NULL);
         option = option->next;
     }
@@ -162,7 +186,7 @@ int    command_argument(char *str, int i, t_argument *argument)
             i++;
         if (str[i] == '\0' || str[i] == '|')
             break ;
-        else if (str[i] == '<' || str[i] == '>')
+        if (str[i] == '<' || str[i] == '>')
             len = ft_spchar_len(str + i, '<', '>');
         else
             len = ft_arg_len(str + i);
@@ -172,6 +196,8 @@ int    command_argument(char *str, int i, t_argument *argument)
         argument->arg[j] = '\0';
         while (str[i] == ' ' || str[i] == '\t')
             i++;
+        if (!str[i])
+            break;
         argument->next = ft_lstnew_arg(NULL);
         argument = argument->next;
     }
@@ -266,7 +292,7 @@ void    ft_syntax_arg(t_argument *argument)
         if (argument->arg[0] == '>' || argument->arg[0] == '<')
         {
             ft_syntax_red(argument->arg);
-            if (argument->next)
+            if (argument->next->next)
             {
                 if (argument->next->arg[0] == '>' || argument->next->arg[0] == '<')
                 {
@@ -295,6 +321,119 @@ void    ft_syntax_error(t_command   *command)
     }
 }
 
+int    ft_quotes_len(char *str)
+{
+    int i;
+    int quotes;
+    char q;
+    
+    i = 0;
+    quotes = 0;
+    while (str[i])
+    {
+        if (str[i] == '"' || str[i] == '\'')
+         {
+            quotes++;
+            q = str[i++];
+            while (str[i] != q && str[i])
+                i++;
+        }
+        i++;
+    }
+    return (quotes);
+}
+
+char    *ft_clean_quotes(char *arg)
+{
+    char    *new;
+    int     i;
+    int     j;
+    char    q;
+    new = malloc(sizeof(char) * (strlen(arg) - ft_quotes_len(arg) + 1));
+    i = 0;
+    j = 0;
+    while (arg[i])
+    {
+        if (arg[i] == '"' || arg[i] == '\'')
+         {
+            q = arg[i++];
+            while (arg[i] != q && arg[i])
+                new[j++] = arg[i++];
+        }
+        else
+            new[j++] = arg[i];
+        i++;
+    }
+    new[j] = '\0';
+    free(arg);
+    return (new);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	char	*dup;
+	int		i;
+
+	i = 0;
+	while (s1[i])
+		i++;
+	dup = (char *)malloc(sizeof(char) * i + 1);
+	i = 0;
+	if (!dup)
+		return (NULL);
+	while (s1[i])
+	{
+		dup[i] = s1[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
+}
+
+void    ft_clean_arg(t_command *command)
+{
+    t_argument  *head;
+    t_argument  *save;
+
+    head = command->argument;
+    while (command->argument)
+    {
+        if (command->argument->next)
+        {
+            if (command->argument->next->arg[0] == '<' || command->argument->next->arg[0] == '>')
+            {
+                command->red->rd = ft_strdup(command->argument->next->arg);
+                save = command->argument->next->next;
+                free(command->argument->next->arg);
+                free(command->argument->next);
+                command->argument->next = save;
+                if (command->argument->next)
+                {
+                    command->file->fl = ft_strdup(command->argument->next->arg);
+                    save = command->argument->next->next;
+                    free(command->argument->next->arg);
+                    free(command->argument->next);
+                    command->argument->next = save;
+                }
+            }
+
+        }
+        //command->argument->arg = ft_clean_quotes(command->argument->arg);
+        command->argument = command->argument->next;
+    }
+    command->argument = head;
+}
+
+void    ft_clean_command(t_command   *command)
+{
+    while (command->next)
+    {
+        ft_clean_arg(command);
+        //command->cmnd = ft_clean_quotes(command->cmnd);
+        command = command->next;
+    }
+}
+
 int main(int ac, char **av, char **env)
 {
     char *readl;
@@ -306,22 +445,33 @@ int main(int ac, char **av, char **env)
         readl = readline("minishell:$");
         add_history(readl);
         command = ft_command(readl);
-        ft_syntax_error(command);
+        // ft_syntax_error(command);
+        ft_clean_command(command);
         while (command->next)
         {
-            printf("command pipe     = %c\n", command->pipe);
-            printf("command name     = %s\n", command->cmnd);
-            while (command->option->next)
+            printf("command pipe      = %c\n", command->pipe);
+            printf("command name      = %s\n", command->cmnd);
+            while (command->option)
             {
-                printf("command option   = %s\n", command->option->opt);
+                printf("command option    = %s\n", command->option->opt);
                 command->option = command->option->next;
             }
-            while (command->argument->next)
+            while (command->argument)
             {
-                printf("command argument = %s\n", command->argument->arg);
+                printf("command argument  = %s\n", command->argument->arg);
                 command->argument = command->argument->next;
             }
-            printf("==================================================\n");
+            while (command->file)
+            {
+                printf("command file  = %s\n", command->file->fl);
+                command->file = command->file->next;
+            }
+            while (command->red)
+            {
+                printf("command redi  = %s\n", command->red->rd);
+                command->red = command->red->next;
+            }
+            printf("\n-------------------------------------------------\n");
             command = command->next;
         }
     }

@@ -8,6 +8,18 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+typedef struct s_file
+{
+    char            *fl;
+    struct  s_file  *next;
+}   t_file;
+
+typedef struct s_red
+{
+    char            *rd;
+    struct  s_red   *next;
+}   t_red;
+
 typedef struct s_option
 {
     char                *opt;
@@ -17,13 +29,15 @@ typedef struct s_option
 typedef struct s_argument
 {
     char                *arg;
-    struct  s_argument    *next;
+    struct  s_argument  *next;
 }   t_argument;
 
 typedef struct  s_command
 {
     char        pipe;
     char        *cmnd;
+    t_file      *file;
+    t_red       *red;
     t_option    *option;
     t_argument  *argument;
     struct  s_command   *next;
