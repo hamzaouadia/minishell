@@ -392,10 +392,14 @@ char	*ft_strdup(const char *s1)
 
 void    ft_clean_arg(t_command *command)
 {
-    t_argument  *head;
+    t_argument  *head_ar;
+    t_file      *head_fl;
+    t_red       *head_rd;
     t_argument  *save;
 
-    head = command->argument;
+    head_ar = command->argument;
+    head_fl = command->file;
+    head_rd = command->red;
     while (command->argument)
     {
         if (command->argument->next)
@@ -407,6 +411,8 @@ void    ft_clean_arg(t_command *command)
                 free(command->argument->next->arg);
                 free(command->argument->next);
                 command->argument->next = save;
+                command->red->next = ft_lstnew_red(NULL);
+                command->red = command->red->next;
                 if (command->argument->next)
                 {
                     command->file->fl = ft_strdup(command->argument->next->arg);
@@ -414,14 +420,18 @@ void    ft_clean_arg(t_command *command)
                     free(command->argument->next->arg);
                     free(command->argument->next);
                     command->argument->next = save;
+                    command->file->next = ft_lstnew_file(NULL);
+                    command->file = command->file->next;
                 }
             }
-
         }
+        else
+            command->argument = command->argument->next;
         //command->argument->arg = ft_clean_quotes(command->argument->arg);
-        command->argument = command->argument->next;
     }
-    command->argument = head;
+    command->argument = head_ar;
+    command->file = head_fl;
+    command->red = head_rd;
 }
 
 void    ft_clean_command(t_command   *command)

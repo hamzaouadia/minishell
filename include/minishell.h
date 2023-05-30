@@ -8,6 +8,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+extern  char    **environ;
+
 typedef struct s_file
 {
     char            *fl;
