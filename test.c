@@ -1,4 +1,4 @@
-#include "../include/minishell.h"
+#include "minishell.h"
 
 t_file  *ft_lstnew_file(void *fl)
 {
@@ -241,8 +241,6 @@ t_command    *ft_command(char *str)
         i = command_syntax(str, i, line);
         while (str[i] == ' ' || str[i] == '\t')
             i++;
-        if (!str[i])
-            break;
         line->next = ft_cmndnew(NULL);
         line = line->next;
     }
@@ -255,14 +253,12 @@ void    ft_syntax_red(char *str)
     int i;
     char red;
     
-    if (str == NULL)
-        return ;
     i = strlen(str);
     red = str[i];
     if (i > 2 || (str[0] == '>' && str[1] == '<'))
     {
         printf("-bash: syntax error near unexpected token\n");
-        exit (0);
+        // exit (0);
     }
 }
 
@@ -272,8 +268,6 @@ void    ft_quotes_syntax(char *str)
     char q;
     
     i = 0;
-    if (str == NULL)
-        return ;
     while (str[i])
     {
         if (str[i] == '"' || str[i] == '\'')
@@ -293,15 +287,18 @@ void    ft_quotes_syntax(char *str)
 
 void    ft_syntax_arg(t_argument *argument)
 { 
-    while(argument)
+    while(argument->next)
     {
-        if (argument->arg && (argument->arg[0] == '>' || argument->arg[0] == '<'))
+        if (argument->arg[0] == '>' || argument->arg[0] == '<')
         {
             ft_syntax_red(argument->arg);
-            if (!argument->next || argument->next->arg[0] == '>' || argument->next->arg[0] == '<')
+            if (argument->next->next)
             {
-                printf("-bash: syntax error near unexpected token %c\n", argument->arg[0]);
-                exit (0);
+                if (argument->next->arg[0] == '>' || argument->next->arg[0] == '<')
+                {
+                    printf("-bash: syntax error near unexpected token %c\n", argument->arg[0]);
+                    // exit (0);
+                }
             }
         }
         ft_quotes_syntax(argument->arg);
@@ -315,9 +312,9 @@ void    ft_syntax_error(t_command   *command)
     if (command->pipe != '\0')
     {
         printf("-bash: syntax error\n");
-        exit (0);
+        // exit (0);
     }
-    while (command)
+    while (command->next)
     {
         ft_syntax_arg(command->argument);
         command = command->next;
@@ -405,76 +402,41 @@ void    ft_clean_arg(t_command *command)
     head_rd = command->red;
     while (command->argument)
     {
-        if (command->argument->next)
+        if (command->argument && (command->argument->arg[0] == '>' || command->argument->arg[0] == '<'))
         {
-            if (command->argument->next->arg[0] == '<' || command->argument->next->arg[0] == '>')
+            command->red->rd = ft_strdup(command->argument->arg);
+            save = command->argument->next;
+            free(command->argument->arg);
+            free(command->argument->next);
+            command->argument = save;
+            command->red->next = ft_lstnew_red(NULL);
+            command->red = command->red->next;
+            if (command->argument)
             {
-                command->red->rd = ft_strdup(command->argument->next->arg);
-                save = command->argument->next->next;
-                free(command->argument->next->arg);
-                free(command->argument->next);
-                command->argument->next = save;
-                command->red->next = ft_lstnew_red(NULL);
-                command->red = command->red->next;
-                command->file->fl = ft_strdup(command->argument->next->arg);
-                save = command->argument->next->next;
-                free(command->argument->next->arg);
-                free(command->argument->next);
-                command->argument->next = save;
+                command->file->fl = ft_strdup(command->argument->arg);
+                save = command->argument->next;
+                free(command->argument->arg);
+                free(command->argument);
+                command->argument = save;
                 command->file->next = ft_lstnew_file(NULL);
                 command->file = command->file->next;
             }
-            else
-                command->argument = command->argument->next;
+            command->argument = command->argument->next;
         }
         else
             command->argument = command->argument->next;
+
     }
     command->argument = head_ar;
     command->file = head_fl;
     command->red = head_rd;
 }
 
-char	*ft_check_var(char *arg, int i)
-{
-	char	*new;
-
-	if (arg[i + 1] == '\0')
-		return (arg);
-	
-	return(new);
-}
-
-void	ft_expand_var(t_argument	*argument)
-{
-	int 	i;
-	int		q;
-
-	while (argument)
-	{
-		i = -1;
-		q = 0;
-		while (argument->arg[++i])
-		{
-			if (argument->arg[i] == '\'')
-				q++;
-			if (argument->arg[i] == '$' && q % 2 == 0)
-			{
-				argument->arg = ft_check_var(argument->arg, i);
-			}
-		}
-		argument = argument->next;
-	}
-	
-}
-
 void    ft_clean_command(t_command   *command)
 {
-    while (command)
+    while (command->next)
     {
-        ft_syntax_error(command);
         ft_clean_arg(command);
-		//ft_expand_var(command->argument);
         //command->cmnd = ft_clean_quotes(command->cmnd);
         command = command->next;
     }
@@ -493,8 +455,9 @@ int main(int ac, char **av, char **env)
         readl = readline("minishell:$");
         add_history(readl);
         command = ft_command(readl);
+        ft_syntax_error(command);
         ft_clean_command(command);
-        while (command)
+        while (command->next)
         {
             printf("command pipe      = %c\n", command->pipe);
             printf("command name      = %s\n", command->cmnd);

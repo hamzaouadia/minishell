@@ -8,7 +8,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-extern  char    **environ;
+struct s_global
+{
+	int		i;
+	char	**environ;
+}			global;
 
 typedef struct s_file
 {
