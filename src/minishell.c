@@ -214,10 +214,13 @@ int    command_syntax(char *str, int i, t_command *command)
     while (str[i] == ' ' || str[i] == '\t')
         i++;
     len = ft_arg_len(str + i);
-    command->cmnd = calloc((len + 1), sizeof(char));
-    while (len > j)
-        command->cmnd[j++] = str[i++];
-    command->cmnd[j] = '\0';
+    if (len != 0)
+    {
+        command->cmnd = calloc((len + 1), sizeof(char));
+        while (len > j)
+            command->cmnd[j++] = str[i++];
+        command->cmnd[j] = '\0';
+    }
     i = command_option(str , i, command->option);
     i = command_argument(str, i, command->argument);
     return (i);
@@ -473,7 +476,7 @@ void    ft_clean_command(t_command   *command)
     while (command)
     {
         ft_syntax_error(command);
-        ft_clean_arg(command);
+        //ft_clean_arg(command);
 		//ft_expand_var(command->argument);
         //command->cmnd = ft_clean_quotes(command->cmnd);
         command = command->next;
