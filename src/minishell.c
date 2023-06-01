@@ -290,12 +290,12 @@ void    ft_quotes_syntax(char *str)
 
 void    ft_syntax_arg(t_argument *argument)
 { 
-    while(argument)
+    while(argument->next)
     {
         if (argument->arg && (argument->arg[0] == '>' || argument->arg[0] == '<'))
         {
             ft_syntax_red(argument->arg);
-            if (!argument->next || argument->next->arg[0] == '>' || argument->next->arg[0] == '<')
+            if (argument->next->arg == NULL || argument->next->arg[0] == '>' || argument->next->arg[0] == '<')
             {
                 printf("-bash: syntax error near unexpected token %c\n", argument->arg[0]);
                 exit (0);
@@ -378,18 +378,38 @@ char	*ft_strdup(const char *s1)
 void    ft_clean_arg(t_command *command)
 {
     t_argument  *head_ar;
+    t_argument  *prev;
+    t_argument  *temp;
+    t_file      *head_fl;
+    t_red       *head_rd;
 
     head_ar = command->argument;
+    head_fl = command->file;
+    head_rd = command->red;
     while (command->argument->next)
     {
-        // if (command->argument->arg && (command->argument->arg[0] == '>' || command->argument->arg[0] == '<'))
-        // {
-        //     command->red->rd = ft_strdup(command->argument->arg);
-        //     command->file->fl = ft_strdup(command->argument->next->arg);
-        // }
+        prev = command->argument;
         command->argument = command->argument->next;
+        if (command->argument->arg && (command->argument->arg[0] == '>' || command->argument->arg[0] == '<'))
+        {
+            temp = command->argument->next;
+            command->red->rd = ft_strdup(command->argument->arg);
+            command->red->next = ft_lstnew_red(NULL);
+            command->red = command->red->next;
+            command->argument =          
+            // if (command->argument->arg)
+            // {
+            //     command->file->fl = ft_strdup(command->argument->next->arg);
+            //     command->file->next = ft_lstnew_file(NULL);
+            //     command->file = command->file->next;
+            //     prev->next = command->argument->next;
+            //     free(command->argument);
+            // }
+        }
     }
     command->argument = head_ar;
+    command->file = head_fl;
+    command->red = head_rd;
 }
 
 char	*ft_check_var(char *arg, int i)
@@ -438,7 +458,7 @@ void    ft_clean_command(t_command   *command)
     }
     while (command->next)
     {
-        ft_syntax_arg(command->argument);
+        //ft_syntax_arg(command->argument);
         ft_clean_arg(command);
 		//ft_expand_var(command->argument);
         //command->cmnd = ft_clean_quotes(command->cmnd);
