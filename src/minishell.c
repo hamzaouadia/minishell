@@ -240,8 +240,6 @@ t_command    *ft_command(char *str)
         i = command_syntax(str, i, line);
         while (str[i] == ' ' || str[i] == '\t')
             i++;
-        if (!str[i])
-            break;
         line->next = ft_cmndnew(NULL);
         line = line->next;
     }
@@ -283,7 +281,7 @@ void    ft_quotes_syntax(char *str)
             if (str[i] == '\0')
             {
                 printf("-bash: syntax error\n");
-                // exit (0);
+                exit (0);
             }    
         }
         i++;
@@ -305,21 +303,6 @@ void    ft_syntax_arg(t_argument *argument)
         }
         ft_quotes_syntax(argument->arg);
         argument = argument->next;
-    }
-}
-
-void    ft_syntax_error(t_command   *command)
-{
-
-    if (command->pipe != '\0')
-    {
-        printf("-bash: syntax error\n");
-        exit (0);
-    }
-    while (command)
-    {
-        ft_syntax_arg(command->argument);
-        command = command->next;
     }
 }
 
@@ -395,17 +378,18 @@ char	*ft_strdup(const char *s1)
 void    ft_clean_arg(t_command *command)
 {
     t_argument  *head_ar;
-    t_file      *head_fl;
-    t_red       *head_rd;
-    t_argument  *save;
 
-    head_fl = command->file;
-    head_rd = command->red;
     head_ar = command->argument;
-
+    while (command->argument->next)
+    {
+        // if (command->argument->arg && (command->argument->arg[0] == '>' || command->argument->arg[0] == '<'))
+        // {
+        //     command->red->rd = ft_strdup(command->argument->arg);
+        //     command->file->fl = ft_strdup(command->argument->next->arg);
+        // }
+        command->argument = command->argument->next;
+    }
     command->argument = head_ar;
-    command->file = head_fl;
-    command->red = head_rd;
 }
 
 char	*ft_check_var(char *arg, int i)
@@ -443,14 +427,24 @@ void	ft_expand_var(t_argument	*argument)
 
 void    ft_clean_command(t_command   *command)
 {
-    while (command)
+    t_command   *head_cmd;
+
+    head_cmd = command;
+    if (command->pipe != '\0')
     {
-        ft_syntax_error(command);
+        printf("%c\n", command->pipe);
+        printf("-bash: syntax error\n");
+        exit (0);
+    }
+    while (command->next)
+    {
+        ft_syntax_arg(command->argument);
         ft_clean_arg(command);
 		//ft_expand_var(command->argument);
         //command->cmnd = ft_clean_quotes(command->cmnd);
         command = command->next;
     }
+    command = head_cmd;
 }
 
 int main(int ac, char **av, char **env)
@@ -467,7 +461,7 @@ int main(int ac, char **av, char **env)
         add_history(readl);
         command = ft_command(readl);
         ft_clean_command(command);
-        while (command)
+        while (command->next)
         {
             printf("command pipe      = %c\n", command->pipe);
             printf("command name      = %s\n", command->cmnd);
