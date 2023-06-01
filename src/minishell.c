@@ -165,8 +165,6 @@ int    command_option(char *str, int i, t_option *option)
         option->opt[j] = '\0';
         while (str[i] == ' ' || str[i] == '\t')
             i++;
-        if (!str[i])
-            break;
         option->next = ft_lstnew_opt(NULL);
         option = option->next;
     }
@@ -196,8 +194,6 @@ int    command_argument(char *str, int i, t_argument *argument)
         argument->arg[j] = '\0';
         while (str[i] == ' ' || str[i] == '\t')
             i++;
-        if (!str[i])
-            break;
         argument->next = ft_lstnew_arg(NULL);
         argument = argument->next;
     }
@@ -403,36 +399,10 @@ void    ft_clean_arg(t_command *command)
     t_red       *head_rd;
     t_argument  *save;
 
-    head_ar = command->argument;
     head_fl = command->file;
     head_rd = command->red;
-    while (command->argument)
-    {
-        if (command->argument->next)
-        {
-            if (command->argument->next->arg[0] == '<' || command->argument->next->arg[0] == '>')
-            {
-                command->red->rd = ft_strdup(command->argument->next->arg);
-                save = command->argument->next->next;
-                free(command->argument->next->arg);
-                free(command->argument->next);
-                command->argument->next = save;
-                command->red->next = ft_lstnew_red(NULL);
-                command->red = command->red->next;
-                command->file->fl = ft_strdup(command->argument->next->arg);
-                save = command->argument->next->next;
-                free(command->argument->next->arg);
-                free(command->argument->next);
-                command->argument->next = save;
-                command->file->next = ft_lstnew_file(NULL);
-                command->file = command->file->next;
-            }
-            else
-                command->argument = command->argument->next;
-        }
-        else
-            command->argument = command->argument->next;
-    }
+    head_ar = command->argument;
+
     command->argument = head_ar;
     command->file = head_fl;
     command->red = head_rd;
@@ -476,7 +446,7 @@ void    ft_clean_command(t_command   *command)
     while (command)
     {
         ft_syntax_error(command);
-        //ft_clean_arg(command);
+        ft_clean_arg(command);
 		//ft_expand_var(command->argument);
         //command->cmnd = ft_clean_quotes(command->cmnd);
         command = command->next;
