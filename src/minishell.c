@@ -212,6 +212,8 @@ int    command_argument(char *str, int i, t_command *command)
                 command->file->fl[j] = '\0';
                 command->file->next = ft_lstnew_file(NULL);
                 command->file = command->file->next;
+                while (str[i] == ' ' || str[i] == '\t')
+                    i++;
             }
             else
             {
@@ -227,6 +229,8 @@ int    command_argument(char *str, int i, t_command *command)
                 command->cmnd = calloc((len + 1), sizeof(char));
                 while (len > j)
                     command->cmnd[j++] = str[i++];
+                while (str[i] == ' ' || str[i] == '\t')
+                    i++;
             }
         }
         else
