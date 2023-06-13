@@ -34,8 +34,8 @@ $(OBJ_DIR) :
 		@mkdir $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o : %.c $(OBJ_DIR)
-		@$(CC) -I $(INC_DIR) -c  $< -o $@
+		@$(CC) $(CFLAGS) -I $(INC_DIR) -c  $< -o $@
 
 $(NAME) : $(HEADERS) $(OBJS)
-		@$(CC) -I $(INC_DIR) $(OBJS) -lreadline -o $@
+		@$(CC) -lreadline $(CFLAGS) -I $(INC_DIR) $(OBJS) -o $@
 		
