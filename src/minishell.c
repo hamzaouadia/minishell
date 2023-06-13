@@ -470,8 +470,12 @@ char	*ft_strdup(const char *s1)
 void    ft_clean_command(t_command   *command)
 {
     t_command   *head_cmd;
+    t_argument  *head_arg;
+    t_file      *head_file;
 
     head_cmd = command;
+    head_arg = command->argument;
+    head_file = command->file;
     if (command->pipe != '\0')
     {
         printf("%c\n", command->pipe);
@@ -481,11 +485,22 @@ void    ft_clean_command(t_command   *command)
     while (command->next)
     {
         ft_syntax_red(command->red);
-		//ft_expand_var(command->argument);
-        //command->cmnd = ft_clean_quotes(command->cmnd);
+        command->cmnd = ft_clean_quotes(command->cmnd);
+        while (command->argument->next)
+        {
+            command->argument->arg = ft_clean_quotes(command->argument->arg);
+            command->argument = command->argument->next;
+        }
+        while (command->file->next)
+        {
+            command->file->fl = ft_clean_quotes(command->file->fl);
+            command->file = command->file->next;
+        }
         command = command->next;
     }
     command = head_cmd;
+    command->argument = head_arg;
+    command->file = head_file;
 }
 
 int main(int ac, char **av, char **env)
