@@ -82,9 +82,11 @@ int  ft_spchar_len(char *str, char d1, char d2)
 int  ft_arg_len(char *str)
 {
     int  len;
+    int  ex;
     char    q;
 
     len = -1;
+    ex = 0;
     while (str[++len])
     {
         if (str[len] == '"' || str[len] == '\'')
@@ -96,79 +98,133 @@ int  ft_arg_len(char *str)
         if (str[len] == ' ' || str[len] == '|' || str[len] == '>' || str[len] == '<')
             break;
     }
-    return (len);    
+    return (len + ex);    
 }
 
-int  ft_opt_len(char *str, char d)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-    int  len;
-    int     i;
+	char	*join;
+	int		i;
+	int		j;
 
-    len = 1;
-    i = 1;
-    if (d == ' ')
-        i = 0;
-    if (str[0] != '-' || str[len] != 'n')
+	i = 0;
+	j = 0;
+	while (s1[i])
+		i++;
+	while (s2[j])
+		j++;
+	join = (char *)malloc(sizeof(char) * (i + j) + 1);
+	if (!join)
+		return (NULL);
+	while (*s1)
+		*join++ = *s1++;
+	while (*s2)
+		*join++ = *s2++;
+	*join = '\0';
+	return (join - i - j);
+}
+
+int     ft_exp_del(char c)
+{
+    if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
         return (0);
-    while (str[len])
+    return (1);
+}
+
+char    *ft_new_arg(char *arg, int i, char *en)
+{
+    char    *new;
+    char    *exp;
+    int     len;
+    int     j;
+    int     k;
+
+    len = 0;
+    j = 0;
+    k = 0;
+    while (en[len])
+        len++;
+    global.exp_len = len;
+    exp = malloc(sizeof(char) * (len + i + 1));
+    len = 0;
+    while (len < i)
+        exp[j++] = arg[len++];
+    len++;
+    while (arg[len] && ft_exp_del(arg[len]) == 0)
+        len++;
+    while (en[k])
+        exp[j++] = en[k++];
+    exp[j] = '\0';
+    new = ft_strjoin(exp, arg + len);
+    free(arg);
+    free(exp);
+    return (new);
+}
+
+char	*ft_check_var(char *arg, int i)
+{
+    int     j;
+    int     k;
+    int     e;
+
+	e = 0;
+    while (global.environ[e])
     {
-        if (str[len] == '"' || str[len] == '\'')
-            i++;
-        if (str[len] == ' ' && d == ' ')
+        k = 0;
+        j = i + 1;
+        while (arg[j] == global.environ[e][k])
         {
-            if (i % 2 == 0 || i == 0)
+            j++;
+            k++;
+        }
+        if (ft_exp_del(arg[j]) == 1 && global.environ[e][k] == '=')
+        {
+            arg = ft_new_arg(arg, i, global.environ[e] + k + 1);
+            return(arg);
+        }
+        e++;
+    }
+	
+	return(arg);
+}
+
+char	*ft_expand_var(char *arg)
+{
+	int 	i;
+	int		j;
+
+    i = 0;
+	while (arg[i])
+	{
+        if (arg[i] == '"')
+        {
+            i++;
+            while (arg[i] && arg[i] != '"')
             {
-                if (i != 0)
-                    len++;
-                break;
+                if (arg[i] == '$')
+                {
+                    arg = ft_check_var(arg, i);
+                    i = i + global.exp_len;
+                }
+                else
+                    i++;
             }
         }
-        if (str[len] == d && (str[len + 1] == ' ' || str[len + 1] == '|' || str[len + 1] == '>' || str[len + 1] == '<' || str[len + 1] == '\0'))
+        if (arg[i] == '\'')
         {
-            if (i % 2 == 0)
-                break;
+            i++;
+            while (arg[i] && arg[i] != '\'')
+                i++;
         }
-        if (d == ' ' && (str[len] == '|' || str[len] == '>' || str[len] == '<'))
-            return (len);
-        if (str[len] != 'n' && str[len] != '"' && str[len] != '\'' && str[len] != '\'')
-            return (0);
-        len++;
-    }
-    if (d == '"' || d == '\'')
-        len += 2;
-    return(len);
-}
-
-int    command_option(char *str, int i, t_option *option)
-{
-    int len;
-    int rec;
-    int j;
-
-    while (str[i] && str[i] != '|')
-    {
-        j = 0;
-        while ((str[i] == ' ' || str[i] == '\t') && str[i])
-            i++;
-        rec = i;
-        if (str[i] != '-' && str[i] != '"' && str[i] != '\'')
-            return (rec);
-        if (str[i] == '"' || str[i] == '\'')
-            len = ft_opt_len(str + i + 1, str[i]);
+        if (arg[i] == '$')
+        {
+            arg = ft_check_var(arg, i);
+            i = i + global.exp_len;
+        }
         else
-            len = ft_opt_len(str + i, str[i - 1]);
-        if (len < 2)
-            return (rec);
-        option->opt = calloc((len + 1), sizeof(char));
-        while (len > j)
-            option->opt[j++] = str[i++];
-        option->opt[j] = '\0';
-        while (str[i] == ' ' || str[i] == '\t')
             i++;
-        option->next = ft_lstnew_opt(NULL);
-        option = option->next;
-    }
-    return (i);
+	}
+    return (arg);
 }
 
 int    command_argument(char *str, int i, t_command *command)
@@ -200,7 +256,7 @@ int    command_argument(char *str, int i, t_command *command)
             command->red = command->red->next;
             while (str[i] == ' ' || str[i] == '\t')
                 i++;
-            if (str[i] && str[i] != '<' && str[i] != '>')
+            if (str[i] && str[i] != '<' && str[i] != '>' && str[i] != '|')
             {
                 while (str[i] == ' ' || str[i] == '\t')
                     i++;
@@ -210,6 +266,7 @@ int    command_argument(char *str, int i, t_command *command)
                 while (len > j)
                     command->file->fl[j++] = str[i++];
                 command->file->fl[j] = '\0';
+                command->file->fl = ft_expand_var(command->file->fl);
                 command->file->next = ft_lstnew_file(NULL);
                 command->file = command->file->next;
                 while (str[i] == ' ' || str[i] == '\t')
@@ -240,6 +297,7 @@ int    command_argument(char *str, int i, t_command *command)
             while (len > j)
                 command->argument->arg[j++] = str[i++];
             command->argument->arg[j] = '\0';
+            command->argument->arg = ft_expand_var(command->argument->arg);
             command->argument->next = ft_lstnew_arg(NULL);
             command->argument = command->argument->next;
         }
@@ -267,7 +325,6 @@ int    command_syntax(char *str, int i, t_command *command)
             command->cmnd[j++] = str[i++];
         command->cmnd[j] = '\0';
     }
-    i = command_option(str , i, command->option);
     i = command_argument(str, i, command);
     return (i);
 }
@@ -408,39 +465,6 @@ char	*ft_strdup(const char *s1)
 	}
 	dup[i] = '\0';
 	return (dup);
-}
-
-char	*ft_check_var(char *arg, int i)
-{
-	char	*new;
-
-	if (arg[i + 1] == '\0')
-		return (arg);
-	
-	return(new);
-}
-
-void	ft_expand_var(t_argument	*argument)
-{
-	int 	i;
-	int		q;
-
-	while (argument)
-	{
-		i = -1;
-		q = 0;
-		while (argument->arg[++i])
-		{
-			if (argument->arg[i] == '\'')
-				q++;
-			if (argument->arg[i] == '$' && q % 2 == 0)
-			{
-				argument->arg = ft_check_var(argument->arg, i);
-			}
-		}
-		argument = argument->next;
-	}
-	
 }
 
 void    ft_clean_command(t_command   *command)

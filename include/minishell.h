@@ -10,7 +10,7 @@
 
 struct s_global
 {
-	int		i;
+	int		exp_len;
 	char	**environ;
 }			global;
 
