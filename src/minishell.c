@@ -488,11 +488,13 @@ void    ft_clean_command(t_command   *command)
         command->cmnd = ft_clean_quotes(command->cmnd);
         while (command->argument->next)
         {
+            ft_quotes_syntax(command->argument->arg);
             command->argument->arg = ft_clean_quotes(command->argument->arg);
             command->argument = command->argument->next;
         }
         while (command->file->next)
         {
+            ft_quotes_syntax(command->file->fl);
             command->file->fl = ft_clean_quotes(command->file->fl);
             command->file = command->file->next;
         }
