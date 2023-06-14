@@ -44,5 +44,4 @@ int	main(int ac, char **av, char **env)
 			command = command->next;
 		}
 	}
-	return (0);
 }
