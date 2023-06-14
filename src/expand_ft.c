@@ -45,6 +45,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	i = 0;
 	j = 0;
+    if (*s2 == '\0')
+        return ((char *)s1);
 	while (s1[i])
 		i++;
 	while (s2[j])
@@ -105,7 +107,7 @@ char	*ft_new_arg(char *arg, int i, char *en, int x)
     g.exp_len = len;
     if ((strchr(en, '>') || strchr(en, '<')) && x == 1)
         g.exp_len = len + ft_count_red(en);
-	exp = malloc(sizeof(char) * (g.exp_len + i + 1));
+	exp = calloc((g.exp_len + i + 1), sizeof(char));
 	len = 0;
 	while (len < i)
 		exp[j++] = arg[len++];
@@ -154,6 +156,19 @@ char	*ft_check_var(char *arg, int i, int x)
 		}
 		e++;
 	}
+    // if (arg[i + 1] == '$')
+    // {
+    //     int j = -1;
+    //     char    *exp;
+    //     char    *new;
+
+    //     exp = calloc(i + 1, sizeof(char));
+    //     while (++j < i)
+    //         exp[j] = arg[j];
+    //     new = ft_strjoin(exp, arg + i + 2);
+    //     free(arg);
+    //     return (new);
+    // }
 	return (arg);
 }
 
