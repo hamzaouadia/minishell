@@ -39,7 +39,6 @@ int	command_argument(char *str, int i, t_command *command)
 				while (len > j)
 					command->file->fl[j++] = str[i++];
 				command->file->fl[j] = '\0';
-				command->file->fl = ft_expand_var(command->file->fl);
 				command->file->next = ft_lstnew_file(NULL);
 				command->file = command->file->next;
 				while (str[i] == ' ' || str[i] == '\t')
@@ -51,7 +50,7 @@ int	command_argument(char *str, int i, t_command *command)
 				exit (0);
 			}
 			if (str[i] && str[i] != '<' && str[i] != '>'
-				&& command->cmnd == NULL)
+				&& command->cmnd == NULL && str[i] != '|')
 			{
 				while (str[i] == ' ' || str[i] == '\t')
 					i++;
@@ -71,7 +70,6 @@ int	command_argument(char *str, int i, t_command *command)
 			while (len > j)
 				command->argument->arg[j++] = str[i++];
 			command->argument->arg[j] = '\0';
-			command->argument->arg = ft_expand_var(command->argument->arg);
 			command->argument->next = ft_lstnew_arg(NULL);
 			command->argument = command->argument->next;
 		}

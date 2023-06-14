@@ -75,6 +75,8 @@ char	*ft_clean_quotes(char *arg)
 
 	i = 0;
 	j = 0;
+    if (!arg)
+        return NULL;
 	new = malloc(sizeof(char) * (strlen(arg) - ft_quotes_len(arg) + 1));
 	while (arg[i])
 	{

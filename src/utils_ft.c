@@ -68,7 +68,28 @@ int	ft_exp_del(char c)
 	return (1);
 }
 
-char	*ft_new_arg(char *arg, int i, char *en)
+int ft_count_red(char *en)
+{
+    int i;
+    int red;
+
+    i = 0;
+    red = 0;
+    while (en[i])
+    {
+        if (en[i] == '>' || en[i] == '<')
+        {
+            red += 2;
+            while (en[i] == '>' || en[i] == '<')
+                i++;
+        }
+        else
+            i++;
+    }
+    return (red);
+}
+
+char	*ft_new_arg(char *arg, int i, char *en, int x)
 {
 	char	*new;
 	char	*exp;
@@ -81,8 +102,10 @@ char	*ft_new_arg(char *arg, int i, char *en)
 	k = 0;
 	while (en[len])
 		len++;
-	g.exp_len = len;
-	exp = malloc(sizeof(char) * (len + i + 1));
+    g.exp_len = len;
+    if ((strchr(en, '>') || strchr(en, '<')) && x == 1)
+        g.exp_len = len + ft_count_red(en);
+	exp = malloc(sizeof(char) * (g.exp_len + i + 1));
 	len = 0;
 	while (len < i)
 		exp[j++] = arg[len++];
@@ -90,7 +113,17 @@ char	*ft_new_arg(char *arg, int i, char *en)
 	while (arg[len] && ft_exp_del(arg[len]) == 0)
 		len++;
 	while (en[k])
-		exp[j++] = en[k++];
+    {
+        if ((en[k] == '>' || en[k] == '<' ) && x == 1)
+        {
+            exp[j++] = '"';
+            while (en[k] == '>' || en[k] == '<')
+                exp[j++] = en[k++];
+            exp[j++] = '"';
+        }
+        else
+		    exp[j++] = en[k++];
+    }
 	exp[j] = '\0';
 	new = ft_strjoin(exp, arg + len);
 	free(arg);
@@ -98,7 +131,7 @@ char	*ft_new_arg(char *arg, int i, char *en)
 	return (new);
 }
 
-char	*ft_check_var(char *arg, int i)
+char	*ft_check_var(char *arg, int i, int x)
 {
 	int	j;
 	int	k;
@@ -116,7 +149,7 @@ char	*ft_check_var(char *arg, int i)
 		}
 		if (ft_exp_del(arg[j]) == 1 && g.environ[e][k] == '=')
 		{
-			arg = ft_new_arg(arg, i, g.environ[e] + k + 1);
+			arg = ft_new_arg(arg, i, g.environ[e] + k + 1, x);
 			return (arg);
 		}
 		e++;
@@ -131,6 +164,7 @@ char	*ft_expand_var(char *arg)
 	i = 0;
 	while (arg[i])
 	{
+        g.exp_len = 0;
 		if (arg[i] == '"')
 		{
 			i++;
@@ -138,7 +172,9 @@ char	*ft_expand_var(char *arg)
 			{
 				if (arg[i] == '$')
 				{
-					arg = ft_check_var(arg, i);
+					arg = ft_check_var(arg, i, 0);
+                    if (g.exp_len == 0)
+                        g.exp_len = 1;
 					i = i + g.exp_len;
 				}
 				else
@@ -153,7 +189,9 @@ char	*ft_expand_var(char *arg)
 		}
 		if (arg[i] == '$')
 		{
-			arg = ft_check_var(arg, i);
+			arg = ft_check_var(arg, i, 1);
+            if (g.exp_len == 0)
+                g.exp_len = 1;
 			i = i + g.exp_len;
 		}
 		else

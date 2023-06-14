@@ -45,13 +45,13 @@ typedef struct s_command
 	struct s_command	*next;
 }						t_command;
 
-struct s_env
+typedef struct s_env
 {
 	int		exp_len;
 	char	**environ;
-};
+}           t_env;
 
-extern struct s_env g;
+struct s_env g;
 
 t_file		*ft_lstnew_file(void *fl);
 t_red		*ft_lstnew_red(void *rd);
@@ -69,8 +69,8 @@ int			ft_spchar_len(char *str, char d1, char d2);
 int			ft_arg_len(char *str);
 char		*ft_strjoin(char const *s1, char const *s2);
 int			ft_exp_del(char c);
-char		*ft_new_arg(char *arg, int i, char *en);
-char		*ft_check_var(char *arg, int i);
+char		*ft_new_arg(char *arg, int i, char *en, int x);
+char		*ft_check_var(char *arg, int i, int x);
 char		*ft_expand_var(char *arg);
 
 

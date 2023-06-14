@@ -15,6 +15,7 @@ int	main(int ac, char **av, char **env)
 	{
 		readl = readline("minishell:$");
 		add_history(readl);
+        readl = ft_expand_var(readl);
 		command = ft_command(readl);
 		ft_clean_command(command);
 		while (command->next)
