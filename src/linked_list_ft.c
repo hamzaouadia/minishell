@@ -24,18 +24,6 @@ t_red	*ft_lstnew_red(void *rd)
 	return (red);
 }
 
-t_option	*ft_lstnew_opt(void *opt)
-{
-	t_option	*option;
-
-	option = malloc(sizeof(t_option));
-	if (!option)
-		exit (0);
-	option->opt = opt;
-	option->next = NULL;
-	return (option);
-}
-
 t_argument	*ft_lstnew_arg(void *arg)
 {
 	t_argument	*argument;
@@ -60,7 +48,6 @@ t_command	*ft_cmndnew(char *str)
 	command->next = NULL;
 	command->file = ft_lstnew_file(NULL);
 	command->red = ft_lstnew_red(NULL);
-	command->option = ft_lstnew_opt(NULL);
 	command->argument = ft_lstnew_arg(NULL);
 	return (command);
 }

@@ -22,12 +22,6 @@ typedef struct s_red
 	struct s_red	*next;
 }					t_red;
 
-typedef struct s_option
-{
-	char				*opt;
-	struct s_option		*next;
-}						t_option;
-
 typedef struct s_argument
 {
 	char				*arg;
@@ -40,7 +34,6 @@ typedef struct s_command
 	char				*cmnd;
 	t_file				*file;
 	t_red				*red;
-	t_option			*option;
 	t_argument			*argument;
 	struct s_command	*next;
 }						t_command;
@@ -55,7 +48,6 @@ struct s_env g;
 
 t_file		*ft_lstnew_file(void *fl);
 t_red		*ft_lstnew_red(void *rd);
-t_option	*ft_lstnew_opt(void *opt);
 t_argument	*ft_lstnew_arg(void *arg);
 t_command	*ft_cmndnew(char *str);
 
@@ -69,6 +61,7 @@ int			ft_spchar_len(char *str, char d1, char d2);
 int			ft_arg_len(char *str);
 char		*ft_strjoin(char const *s1, char const *s2);
 int			ft_exp_del(char c);
+int	        ft_exp_check(char c);
 char		*ft_new_arg(char *arg, int i, char *en, int x);
 char		*ft_check_var(char *arg, int i, int x);
 char		*ft_expand_var(char *arg);

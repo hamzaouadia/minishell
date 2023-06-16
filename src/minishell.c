@@ -20,11 +20,6 @@ int	main(int ac, char **av, char **env)
 		{
 			printf("command pipe      = %c\n", command->pipe);
 			printf("command name      = %s\n", command->cmnd);
-			while (command->option)
-			{
-				printf("command option    = %s\n", command->option->opt);
-				command->option = command->option->next;
-			}
 			while (command->argument)
 			{
 				printf("command argument  = %s\n", command->argument->arg);

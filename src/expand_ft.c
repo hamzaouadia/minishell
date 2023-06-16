@@ -17,11 +17,9 @@ int	ft_spchar_len(char *str, char d1, char d2)
 int	ft_arg_len(char *str)
 {
 	int		len;
-	int		ex;
 	char	q;
 
 	len = -1;
-	ex = 0;
 	while (str[++len])
 	{
 		if (str[len] == '"' || str[len] == '\'')
@@ -30,11 +28,10 @@ int	ft_arg_len(char *str)
 			while (str[len] && str[len] != q)
 				len++;
 		}
-		if (str[len] == ' ' || str[len] == '|'
-			|| str[len] == '>' || str[len] == '<')
+		if (str[len] == ' ' || str[len] == '|' || str[len] == '>' || str[len] == '<')
 			break ;
 	}
-	return (len + ex);
+	return (len);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -60,9 +57,16 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (join - i - j);
 }
 
+int	ft_exp_check(char c)
+{
+	if ((c >= 43 && c <= 47) || c == 0 || c == '|' || c == '>' || c == '<')
+		return (1);
+	return (0);
+}
+
 int	ft_exp_del(char c)
 {
-	if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
+    if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
 		|| (c >= 'A' && c <= 'Z'))
 		return (0);
 	return (1);
@@ -140,6 +144,8 @@ char    *ft_remove_var(char *arg, int i)
 
     j = -1;
     len = 1;
+    if (ft_exp_del(arg[i + 2]))
+        len = 2;
     exp = calloc(i + 1, sizeof(char));
     while (++j < i)
         exp[j] = arg[j];
@@ -177,7 +183,7 @@ char	*ft_check_var(char *arg, int i, int x)
 		}
 		e++;
 	}
-    if (ft_exp_del(arg[i + 1]) == 0 || arg[i + 1] == '$')
+    if (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$')
         arg = ft_remove_var(arg, i);
 	return (arg);
 }
@@ -202,7 +208,7 @@ char	*ft_expand_var(char *arg)
 			i++;
 			while (arg[i] && arg[i] != '"')
 			{
-				if (arg[i] == '$')
+				if (arg[i] == '$' && (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$'))
                 {
 					arg = ft_check_var(arg, i, 0);
                     i = i + g.exp_len;
@@ -212,7 +218,7 @@ char	*ft_expand_var(char *arg)
 			}
             i++;
 		}
-		else if (arg[i] == '$')
+		else if (arg[i] == '$' && (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$'))
         {
 			arg = ft_check_var(arg, i, 1);
             i = i + g.exp_len; 
