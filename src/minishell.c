@@ -38,5 +38,6 @@ int	main(int ac, char **av, char **env)
 			printf("\n-------------------------------------------------\n");
 			command = command->next;
 		}
+        //ft_execute_bulitins(command, 1);
 	}
 }

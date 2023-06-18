@@ -8,7 +8,10 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-
+# include <limits.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <sys/errno.h>
 
 typedef struct s_file
 {
@@ -28,6 +31,14 @@ typedef struct s_argument
 	struct s_argument	*next;
 }						t_argument;
 
+typedef struct s_env
+{
+	int		exp_len;
+	char	**environ;
+}           t_env;
+
+struct s_env g;
+
 typedef struct s_command
 {
 	char				pipe;
@@ -38,13 +49,45 @@ typedef struct s_command
 	struct s_command	*next;
 }						t_command;
 
-typedef struct s_env
+/*---------------------------------------------*/
+typedef struct s_glob
 {
-	int		exp_len;
-	char	**environ;
-}           t_env;
+	int		fdout;
+	int		fd_in;
+	int		g_exit_status;
+	int		g_env;
+	int		g_exp;
+	char	**envp;
+	char	**exp;
+	char	*pwd;
+	int		env;
+	int 	pid;
+	int		copy_fd;
+	int		tmpin;
+	int 	tmpout;
+	int		g_child;
+	int		last;
+	int		j;
+	
+}				t_glob;
+t_glob			g_glob;
 
-struct s_env g;
+
+typedef struct s_data
+{
+	char	**args;
+	int		error;
+	int		if_hd;
+	char	*inf;
+	int		*infiles;
+	int		n_infiles;
+	char	**outfiles;
+	char	**append;
+	char	**hd;
+	int		end[2];
+	char	**envp;
+}				t_data;
+/*---------------------------------------------*/
 
 t_file		*ft_lstnew_file(void *fl);
 t_red		*ft_lstnew_red(void *rd);
@@ -70,7 +113,20 @@ char		*ft_expand_var(char *arg);
 int			command_argument(char *str, int i, t_command *command);
 int			command_syntax(char *str, int i, t_command *command);
 t_command	*ft_command(char *str);
-
 t_command	*ft_command(char *str);
+
+/*----------------------------------------------------*/
+
+
+char	*ft_cd_home(t_command *command);
+int	    ft_cd_cmmd(t_command *command);
+char	    *ft_getenv(char *str);
+char	    *strdup(const char *s1);
+char	    *ft_strjoin(char	const *s1, char	const *s2);
+int		strncmp(const char *s1, const char *s2, size_t n);
+size_t	strlen(const	char *s);
+
+
+int		ft_execute_bulitins(t_command *exec, int mode);
 
 #endif
