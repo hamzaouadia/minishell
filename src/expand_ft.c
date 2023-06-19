@@ -28,7 +28,7 @@ int	ft_arg_len(char *str)
 			while (str[len] && str[len] != q)
 				len++;
 		}
-		if (str[len] == ' ' || str[len] == '|' || str[len] == '>' || str[len] == '<')
+		if (str[len] == ' ' || str[len] == '|' || str[len] == '>' || str[len] == '<' || !str[len])
 			break ;
 	}
 	return (len);
@@ -202,7 +202,6 @@ char	*ft_expand_var(char *arg)
 		}
 		if (arg[i] == '"')
 		{
-                printf("%c      %d\n",arg[i], i);
 			i++;
 			while (arg[i] && arg[i] != '"')
 			{
@@ -220,7 +219,7 @@ char	*ft_expand_var(char *arg)
 			arg = ft_check_var(arg, i, 1);
             i = i + g.exp_len;
         }
-        else
+        else if (arg[i])
             i++;
 	}
 	return (arg);
