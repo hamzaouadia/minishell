@@ -36,9 +36,11 @@ void	exec_first_cmd_in_pipe(t_commnd *cmd, t_heredoc **heredocc, char **envp,
 		dup2(all->fds->fd_out, 1);
 	else
 		dup2(all->utils->fd_pipe[1], 1);
+    printf ("************\n");
 	close(all->utils->fd_pipe[1]);
 	if (cmd->cmd[0])
 	{
+
 		if (check_builtins(cmd) == 0)
 		{
 			execve(check_path(all->lst, cmd), cmd->cmd, envp);

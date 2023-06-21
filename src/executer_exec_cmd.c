@@ -132,7 +132,7 @@ void	exec_2_cmd(t_commnd *cmd, char **envp, t_heredoc **heredocc1,
 {
 	initi_fds(all->fds);
 	all->utils->stock_pipe = -1;
-	if (cmd->cmd[0] == NULL)
+	if (cmd->cmd == NULL)
 		open_files_bu(cmd, all->fds, heredocc1);
 	pipe(all->utils->fd_pipe);
 	all->utils->pid_fork = fork();

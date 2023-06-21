@@ -119,7 +119,7 @@ int	main(int ac, char **av, char **envp)
 
     while (1)
 	{
-		readl = readline("minishell:$");
+		readl = readline("minishell:$ ");
 		add_history(readl);
         readl = ft_expand_var(readl);
 		command = ft_command(readl);
