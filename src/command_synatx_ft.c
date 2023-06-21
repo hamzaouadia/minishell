@@ -4,13 +4,11 @@ int	command_argument(char *str, int i, t_command *command)
 {
 	t_argument	*head_ar;
 	t_red		*head_red;
-	t_file		*head_fl;
 	int			len;
 	int			j;
 
 	head_ar = command->argument;
 	head_red = command->red;
-	head_fl = command->file;
 	while (str[i])
 	{
 		j = 0;
@@ -22,11 +20,9 @@ int	command_argument(char *str, int i, t_command *command)
 		{
 			len = ft_spchar_len(str + i, '<', '>');
 			command->red->rd = calloc((len + 1), sizeof(char));
+			command->red->rd[j] = '\0';
 			while (len > j)
 				command->red->rd[j++] = str[i++];
-			command->red->rd[j] = '\0';
-			command->red->next = ft_lstnew_red(NULL);
-			command->red = command->red->next;
 			while (str[i] == ' ' || str[i] == '\t')
 				i++;
 			if (str[i] && str[i] != '<' && str[i] != '>' && str[i] != '|')
@@ -35,12 +31,10 @@ int	command_argument(char *str, int i, t_command *command)
 					i++;
 				j = 0;
 				len = ft_arg_len(str + i);
-				command->file->fl = calloc((len + 1), sizeof(char));
+				command->red->fl = calloc((len + 1), sizeof(char));
 				while (len > j)
-					command->file->fl[j++] = str[i++];
-				command->file->fl[j] = '\0';
-				command->file->next = ft_lstnew_file(NULL);
-				command->file = command->file->next;
+					command->red->fl[j++] = str[i++];
+				command->red->fl[j] = '\0';
 				while (str[i] == ' ' || str[i] == '\t')
 					i++;
 			}
@@ -62,6 +56,8 @@ int	command_argument(char *str, int i, t_command *command)
 				while (str[i] == ' ' || str[i] == '\t')
 					i++;
 			}
+            command->red->next = ft_lstnew_red(NULL);
+			command->red = command->red->next;
 		}
 		else
 		{
@@ -76,7 +72,6 @@ int	command_argument(char *str, int i, t_command *command)
 	}
 	command->argument = head_ar;
 	command->red = head_red;
-	command->file = head_fl;
 	return (i);
 }
 
@@ -121,5 +116,6 @@ t_command	*ft_command(char *str)
 		command->next = ft_cmndnew(NULL);
 		command = command->next;
 	}
-	return (head);
+    command = head;
+	return (command);
 }

@@ -34,29 +34,6 @@ int	ft_arg_len(char *str)
 	return (len);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	char	*join;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	while (s1[i])
-		i++;
-	while (s2[j])
-		j++;
-	join = (char *)malloc(sizeof(char) * (i + j) + 1);
-	if (!join)
-		return (NULL);
-	while (*s1)
-		*join++ = *s1++;
-	while (*s2)
-		*join++ = *s2++;
-	*join = '\0';
-	return (join - i - j);
-}
-
 int	ft_exp_check(char c)
 {
 	if ((c >= 43 && c <= 47) || c == '\'' || c == '"' || c == 0 || c == '|' || c == '>' || c == '<')
@@ -106,10 +83,10 @@ char	*ft_new_arg(char *arg, int i, char *en, int x)
 	k = 0;
 	while (en[len])
 		len++;    
-    g.exp_len = len;
+    g_global.exp_len = len;
     if ((strchr(en, '>') || strchr(en, '<')) && x == 1)
-        g.exp_len = len + ft_count_red(en);
-	exp = calloc((g.exp_len + i + 1), sizeof(char));
+        g_global.exp_len = len + ft_count_red(en);
+	exp = calloc((g_global.exp_len + i + 1), sizeof(char));
 	len = 0;
 	while (len < i)
 		exp[j++] = arg[len++];
@@ -129,6 +106,8 @@ char	*ft_new_arg(char *arg, int i, char *en, int x)
 		    exp[j++] = en[k++];
     }
 	exp[j] = '\0';
+    if (x == 2)
+		len++;
 	new = ft_strjoin(exp, arg + len);
 	free(arg);
 	free(exp);
@@ -165,23 +144,25 @@ char	*ft_check_var(char *arg, int i, int x)
 	int	e;
 
 	e = 0;
-	while (g.environ[e])
+	while (g_global.en[e])
 	{
 		k = 0;
 		j = i + 1;
-		while (arg[j] == g.environ[e][k])
+		while (arg[j] == g_global.en[e][k])
 		{
 			j++;
 			k++;
 		}
-		if (ft_exp_del(arg[j]) == 1 && g.environ[e][k] == '=')
+		if (ft_exp_del(arg[j]) == 1 && g_global.en[e][k] == '=')
 		{
-			arg = ft_new_arg(arg, i, g.environ[e] + k + 1, x);
+			arg = ft_new_arg(arg, i, g_global.en[e] + k + 1, x);
 			return (arg);
 		}
 		e++;
 	}
-    if (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$')
+    if (arg[i + 1] == '?')
+		arg = ft_new_arg(arg, i, "0", 2);
+    else if (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$')
         arg = ft_remove_var(arg, i);
 	return (arg);
 }
@@ -193,7 +174,7 @@ char	*ft_expand_var(char *arg)
 	i = 0;
 	while (arg[i])
 	{
-        g.exp_len = 0;
+        g_global.exp_len = 0;
 		if (arg[i] == '\'')
 		{
 			i++;
@@ -208,7 +189,7 @@ char	*ft_expand_var(char *arg)
 				if (arg[i] == '$' && (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$'))
                 {
 					arg = ft_check_var(arg, i, 0);
-                    i = i + g.exp_len;
+                    i = i + g_global.exp_len;
                 }
 				else
 					i++;
@@ -217,10 +198,49 @@ char	*ft_expand_var(char *arg)
 		if (arg[i] == '$' && (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$'))
         {
 			arg = ft_check_var(arg, i, 1);
-            i = i + g.exp_len;
+            i = i + g_global.exp_len;
         }
         else if (arg[i])
             i++;
 	}
 	return (arg);
+}
+
+char	**nodes_counter(t_env **env)
+{
+	int i;
+	char *str1;
+	char *str2;
+	char *str3;
+	char *str4;
+	char **en;
+	t_env *tmp;
+
+	tmp =  *env;
+	i = 0;
+	while (*env)
+	{
+		*env = (*env)->next;
+		i++;
+	}
+	*env = tmp;
+	en = ft_calloc(i + 1 ,sizeof(char *));
+	i = 0;
+	while (*env)
+	{
+		str1 = ft_strdup((*env)->value);
+		str2 = ft_strdup((*env)->key);
+		str3 = ft_strjoin(str2, "=");
+		str4 = ft_strjoin(str3, str1);
+		en[i] = ft_strdup(str4);
+		i++;
+		(*env) = (*env)->next;
+		free(str1);
+		free(str2);
+		free(str3);
+		free(str4);
+	}
+	en[i] = NULL;
+	*env = tmp;
+	return (en);
 }

@@ -99,7 +99,7 @@ void	ft_clean_command(t_command *command)
 {
 	t_command	*head_cmd;
 	t_argument	*head_arg;
-	t_file		*head_file;
+	t_red		*head_red;
 
 	head_cmd = command;
 	if (command->pipe != '\0')
@@ -110,7 +110,7 @@ void	ft_clean_command(t_command *command)
 	while (command->next)
 	{
         head_arg = command->argument;
-        head_file = command->file;
+        head_red = command->red;
 		ft_syntax_red(command->red);
 		command->cmnd = ft_clean_quotes(command->cmnd);
 		while (command->argument->next)
@@ -119,14 +119,14 @@ void	ft_clean_command(t_command *command)
 			command->argument->arg = ft_clean_quotes(command->argument->arg);
 			command->argument = command->argument->next;
 		}
-		while (command->file->next)
+		while (command->red->next)
 		{
-			ft_quotes_syntax(command->file->fl);
-			command->file->fl = ft_clean_quotes(command->file->fl);
-			command->file = command->file->next;
+			ft_quotes_syntax(command->red->fl);
+			command->red->fl = ft_clean_quotes(command->red->fl);
+			command->red = command->red->next;
 		}
 	    command->argument = head_arg;
-	    command->file = head_file;
+	    command->red = head_red;
 		command = command->next;
 	}
 	command = head_cmd;

@@ -1,17 +1,5 @@
 #include "minishell.h"
 
-t_file	*ft_lstnew_file(void *fl)
-{
-	t_file	*file;
-
-	file = malloc(sizeof(t_file));
-	if (!file)
-		exit (0);
-	file->fl = fl;
-	file->next = NULL;
-	return (file);
-}
-
 t_red	*ft_lstnew_red(void *rd)
 {
 	t_red	*red;
@@ -20,6 +8,7 @@ t_red	*ft_lstnew_red(void *rd)
 	if (!red)
 		exit (0);
 	red->rd = rd;
+    red->fl = rd;
 	red->next = NULL;
 	return (red);
 }
@@ -46,7 +35,6 @@ t_command	*ft_cmndnew(char *str)
 	command->cmnd = str;
 	command->pipe = '\0';
 	command->next = NULL;
-	command->file = ft_lstnew_file(NULL);
 	command->red = ft_lstnew_red(NULL);
 	command->argument = ft_lstnew_arg(NULL);
 	return (command);
