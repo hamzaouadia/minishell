@@ -109,6 +109,11 @@ void	ft_clean_command(t_command *command)
 	}
 	while (command->next)
 	{
+        if (command->pipe != '\0' && !command->cmnd && !command->argument->arg && !command->red->rd)
+    	{
+	    	printf("-bash: syntax error\n");
+		    exit (0);
+	    }
         head_arg = command->argument;
         head_red = command->red;
 		ft_syntax_red(command->red);

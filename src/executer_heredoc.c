@@ -47,6 +47,7 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 	while (1)
 	{
 		heredoc = readline("< ");
+        heredoc = ft_expand_var(heredoc);
 		if (ft_strcmp(heredoc, delimit) == 0)
 			break ;
 		write(fd[1], heredoc, ft_strlen(heredoc));

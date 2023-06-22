@@ -128,21 +128,17 @@ int	main(int ac, char **av, char **envp)
     t_env		*lst;
 	char		**ret;
 	t_all       *all;
-	t_fds		*fds;
 	t_heredoc	*heredocc;
-	t_utils     *utils;
 
 	if (ac > 1)
 		return (0);
 	heredocc = NULL;
     lst = NULL;
 	ret = NULL;
-    all =   malloc(sizeof(t_all));
-	utils = malloc(sizeof(t_utils));
-	fds = malloc(sizeof(t_fds));
+    all = malloc(sizeof(t_all));
     all->heredocc = heredocc; 
-	all->fds = fds; 
-	all->utils = utils;
+	all->fds = malloc(sizeof(t_fds)); 
+	all->utils = malloc(sizeof(t_utils));
 	copy_env(envp, &lst);
 	g_global.en = nodes_counter(&lst);
 	all->lst = lst;
