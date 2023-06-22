@@ -88,15 +88,3 @@ void	check_heredoc(t_commnd *cmd, t_heredoc **heredoc)
 	}
     cmd = head;
 }
-
-// khasni ndir tableau de deux dimensions kanhet fih fds dyal pipes ,
-//kansavu fih 0 u 1 u kanbqa ntcheki ela wach kayn heredoc muraha
-//la kan kanbqa nsed 0 dyalu u 1 (waqila) ila kan murah null yaeni 
-//pipe ula makayn tahaja rah kansavi [0].//
-// qbl mn kula heredoc khasni nopeni pipe u 
-//nsed fd_pie[0] dyalu u mn bead man hel herdoce ngulih ikteb fdfd_pipe[1]
-// mn bead ansavi akhir fd[0] dyal pipe bach nqrra menu lcommande
-
-// tableau deux dimensions fi integr anbqa nzid bih
-// fonction katcheki wch li muraha herdoc la kan kansedu 0
-// nalouer bnombre dyal nodes li endi

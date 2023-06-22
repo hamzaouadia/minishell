@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static void	put_str(char *string, long long int nb, int size)
+void	put_str(char *string, long long int nb, int size)
 {
 	if (nb == 0)
 		string[0] = '0';
@@ -18,7 +18,7 @@ static void	put_str(char *string, long long int nb, int size)
 	}
 }
 
-static int	string_size(long long int nb)
+int	string_size(long long int nb)
 {
 	int	i;
 
@@ -93,7 +93,7 @@ int	ft_arg_len(char *str)
 
 int	ft_exp_check(char c)
 {
-	if ((c >= 43 && c <= 47) || c == '\'' || c == '"' || c == 0 || c == '|' || c == '>' || c == '<')
+	if ((c >= 43 && c <= 47) || c == ' ' || c == 0 || c == '|' || c == '>' || c == '<')
 		return (1);
 	return (0);
 }
@@ -101,7 +101,7 @@ int	ft_exp_check(char c)
 int	ft_exp_del(char c)
 {
     if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
-		|| (c >= 'A' && c <= 'Z'))
+		|| (c >= 'A' && c <= 'Z') || c == '_')
 		return (0);
 	return (1);
 }
@@ -199,7 +199,7 @@ char	*ft_check_var(char *arg, int i, int x)
 	int	j;
 	int	k;
 	int	e;
-
+    char    *code;
 	e = 0;
 	while (g_global.en[e])
 	{
@@ -207,6 +207,8 @@ char	*ft_check_var(char *arg, int i, int x)
 		j = i + 1;
 		while (arg[j] == g_global.en[e][k])
 		{
+            if (g_global.en[e][k] == '=')
+                break ;
 			j++;
 			k++;
 		}
@@ -218,7 +220,11 @@ char	*ft_check_var(char *arg, int i, int x)
 		e++;
 	}
     if (arg[i + 1] == '?')
-		arg = ft_new_arg(arg, i, ft_itoa(g_global.exit_code), 2);
+    {
+        code = ft_itoa(g_global.exit_code);
+		arg = ft_new_arg(arg, i, code, 2);
+        free(code);
+    }
     else if (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$')
         arg = ft_remove_var(arg, i);
 	return (arg);

@@ -117,5 +117,6 @@ t_command	*ft_command(char *str)
 		command = command->next;
 	}
     command = head;
+    free(str);
 	return (command);
 }

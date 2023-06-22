@@ -85,15 +85,46 @@ t_commnd    *ft_transfer_cmd(t_command  *command)
     return (cmd);
 }
 
+void    ft_free_oldlist(t_command *command)
+{
+    t_command   *temp;
+    t_red   *temp_red;
+    t_argument   *temp_arg;
+
+    while (command)
+    {
+        temp = command;
+        if (command->cmnd)
+            free(command->cmnd);
+        while (command->argument)
+        {
+            temp_arg = command->argument;
+            if (command->argument->arg)
+                free(command->argument->arg);
+            command->argument = command->argument->next;
+            free(temp_arg);
+        }
+        while (command->red)
+        {
+            temp_red = command->red;
+            if (command->red->rd)
+                free(command->red->rd);
+            if (command->red->fl)
+                free(command->red->fl);
+            command->red = command->red->next;
+            free(temp_red);
+        }
+        command = command->next;
+        free(temp);
+    }
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	(void)av;
 	char		*readl;
 	t_command	*command;
 	t_commnd	*cmd;
-	t_commnd	*cmd_head;
-
-
     t_env		*lst;
 	char		**ret;
 	t_all       *all;
@@ -103,7 +134,6 @@ int	main(int ac, char **av, char **envp)
 
 	if (ac > 1)
 		return (0);
-
 	heredocc = NULL;
     lst = NULL;
 	ret = NULL;
@@ -116,7 +146,6 @@ int	main(int ac, char **av, char **envp)
 	copy_env(envp, &lst);
 	g_global.en = nodes_counter(&lst);
 	all->lst = lst;
-
     while (1)
 	{
 		readl = readline("minishell:$ ");
@@ -125,7 +154,7 @@ int	main(int ac, char **av, char **envp)
 		command = ft_command(readl);
 		ft_clean_command(command);
         cmd = ft_transfer_cmd(command);
-        cmd_head = cmd;
+        ft_free_oldlist(command);
         check_heredoc(cmd, &heredocc);
 		if (ft_lstsize_cmd(cmd) == 1)
 			exec_first_cmd(cmd, envp, &heredocc, all);
@@ -135,8 +164,7 @@ int	main(int ac, char **av, char **envp)
 		{
 			close(heredocc->fd_pipe_heredoc);
 			heredocc = heredocc->next;
-		}
-			
+		}	
 		heredocc = NULL;
     }
 }
