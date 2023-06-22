@@ -139,9 +139,7 @@ void	exec_2_cmd(t_commnd *cmd, char **envp, t_heredoc **heredocc1,
 	if (all->utils->pid_fork == -1)
 		print_errors_fork();
 	if (all->utils->pid_fork == 0)
-	{
 		exec_first_cmd_in_pipe(cmd, heredocc1, envp, all);
-	}
 	else
 		helper1(cmd, envp, all, heredocc1);
 }

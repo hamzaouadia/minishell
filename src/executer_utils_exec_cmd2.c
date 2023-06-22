@@ -36,11 +36,9 @@ void	exec_first_cmd_in_pipe(t_commnd *cmd, t_heredoc **heredocc, char **envp,
 		dup2(all->fds->fd_out, 1);
 	else
 		dup2(all->utils->fd_pipe[1], 1);
-    printf ("************\n");
 	close(all->utils->fd_pipe[1]);
 	if (cmd->cmd[0])
 	{
-
 		if (check_builtins(cmd) == 0)
 		{
 			execve(check_path(all->lst, cmd), cmd->cmd, envp);
@@ -123,7 +121,7 @@ void	helper1(t_commnd *cmd, char **envp, t_all *all, t_heredoc **heredocc1)
 	if (check_find_herdoc(&cmd, 0) && check_find_herdoc(&cmd->next, 0))
 		heredocc = heredocc->next;
 	cmd = cmd->next;
-	while (cmd->next)
+	while (cmd->next->cmd)
 	{
 		helper2(all->fds, all->utils);
 		all->utils->pid_fork = fork();

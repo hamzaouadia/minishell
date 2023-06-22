@@ -264,6 +264,7 @@ char					*my_pwd2(int i, t_env *lst);
 void    signalsss(char **cmd_line);
 void    sighandle(int sig);
 
+
 void rl_replace_line (const char *text, int clear_undo);
 int		ft_execute_bulitins(t_commnd *exec, int mode);
 void	ft_free_ddim(char **str);
