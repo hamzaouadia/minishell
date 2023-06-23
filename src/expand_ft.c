@@ -275,6 +275,7 @@ char	*ft_expand_var(char *arg, int ex)
         else if (arg[i])
             i++;
 	}
+
 	return (arg);
 }
 

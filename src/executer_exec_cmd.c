@@ -118,11 +118,8 @@ void	exec_first_cmd(t_commnd *cmd, char **envp, t_heredoc **heredocc,
 		pid_fork = fork();
 	if (pid_fork == -1)
 		print_errors_fork();
-	if (pid_fork == 0)
-	{
-		
+	if (pid_fork == 0)	
 		exec_one_cmd(cmd, envp, all, heredocc);
-	}
 	else
 		wait(NULL);
 }

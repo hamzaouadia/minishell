@@ -61,19 +61,24 @@ t_commnd    *ft_transfer_cmd(t_command  *command)
         cmd->cmd = malloc(sizeof(char *) * (arg_len + 1));
         cmd->file = malloc(sizeof(char *) * (fl_len + 1));
         if (command->cmnd)
+        {
             cmd->cmd[i++] = strdup(command->cmnd);
+            free(command->cmnd);
+        }
         while (command->argument->arg)
         {
-            cmd->cmd[i++] =  strdup(command->argument->arg); 
+            cmd->cmd[i++] =  strdup(command->argument->arg);
+            free(command->argument->arg);
             command->argument = command->argument->next;
         }
         cmd->cmd[i] = NULL;
         i = 0;
         while (command->red->rd)
         {
-            printf ("|%s|\n", command->red->rd);
             cmd->file[i++] =  strdup(command->red->rd); 
             cmd->file[i++] =  strdup(command->red->fl); 
+            free(command->red->rd);
+            free(command->red->fl);
             command->red = command->red->next;
         }
         cmd->file[i] = NULL;
@@ -94,29 +99,31 @@ void    ft_free_oldlist(t_command *command)
     while (command)
     {
         temp = command;
-        if (command->cmnd)
-            free(command->cmnd);
         while (command->argument)
         {
             temp_arg = command->argument;
-            if (command->argument->arg)
-                free(command->argument->arg);
             command->argument = command->argument->next;
             free(temp_arg);
         }
         while (command->red)
         {
             temp_red = command->red;
-            if (command->red->rd)
-                free(command->red->rd);
-            if (command->red->fl)
-                free(command->red->fl);
             command->red = command->red->next;
             free(temp_red);
         }
         command = command->next;
         free(temp);
     }
+}
+
+void    ft_free_env(char **en)
+{
+    int i;
+
+    i = 0;
+    while (en[i])
+        free(en[i++]);
+    free(en);
 }
 
 void    ft_free_cmd(t_commnd *cmd)
@@ -138,6 +145,7 @@ void    ft_free_cmd(t_commnd *cmd)
         cmd = cmd->next;
         free(tmp);
     }
+    free(cmd);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -169,18 +177,8 @@ int	main(int ac, char **av, char **envp)
 		command = ft_command(readl);
 		ft_clean_command(command);
         cmd = ft_transfer_cmd(command);
-        // int i;
-        // while (cmd->next)
-        // {
-        //     i = 0;
-        //     while (cmd->cmd[i])
-        //         printf("command = %s\n", cmd->cmd[i++]);
-        //     i = 0;
-        //     while (cmd->file[i])
-        //         printf("command = %s\n", cmd->file[i++]);
-        //     cmd = cmd->next;
-        // }
         ft_free_oldlist(command);
+        printf ("%p\n", command);
         check_heredoc(cmd, &heredocc);
 		if (ft_lstsize_cmd(cmd) == 1)
 			exec_first_cmd(cmd, envp, &heredocc, all);
@@ -191,6 +189,7 @@ int	main(int ac, char **av, char **envp)
 			close(heredocc->fd_pipe_heredoc);
 			heredocc = heredocc->next;
         }
+        ft_free_env(g_global.en);
         ft_free_cmd(cmd);
 		heredocc = NULL;
     }

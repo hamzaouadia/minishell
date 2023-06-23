@@ -19,6 +19,7 @@ void	exec_builtins(t_commnd *cmd, t_env *lst)
 		my_pwd(0, lst);
 	else if (ft_strcmp(cmd->cmd[0], "unset") == 0)
 		my_unset(cmd, &lst);
+    free (utils);
 }
 
 int	check_builtins(t_commnd *cmd)

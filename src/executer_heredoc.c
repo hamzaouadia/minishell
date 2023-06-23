@@ -87,5 +87,6 @@ void	check_heredoc(t_commnd *cmd, t_heredoc **heredoc)
 		}
 		cmd = cmd->next;
 	}
+    free(delimit);
     cmd = head;
 }
