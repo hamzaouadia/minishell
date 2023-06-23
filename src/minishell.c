@@ -159,10 +159,10 @@ int	main(int ac, char **av, char **envp)
 	all->fds = malloc(sizeof(t_fds)); 
 	all->utils = malloc(sizeof(t_utils));
 	copy_env(envp, &lst);
-	g_global.en = nodes_counter(&lst);
 	all->lst = lst;
     while (1)
 	{
+	    g_global.en = nodes_counter(&lst);
 		readl = readline("minishell:$ ");
 		add_history(readl);
         readl = ft_expand_var(readl, 0);
@@ -181,16 +181,16 @@ int	main(int ac, char **av, char **envp)
         //     cmd = cmd->next;
         // }
         ft_free_oldlist(command);
-        // check_heredoc(cmd, &heredocc);
-		// if (ft_lstsize_cmd(cmd) == 1)
-		// 	exec_first_cmd(cmd, envp, &heredocc, all);
-		// else if (ft_lstsize_cmd(cmd) >= 2)
-		// 	exec_2_cmd(cmd, envp, &heredocc,all);
-		// while (heredocc)
-		// {
-		// 	close(heredocc->fd_pipe_heredoc);
-		// 	heredocc = heredocc->next;
-        // }
+        check_heredoc(cmd, &heredocc);
+		if (ft_lstsize_cmd(cmd) == 1)
+			exec_first_cmd(cmd, envp, &heredocc, all);
+		else if (ft_lstsize_cmd(cmd) >= 2)
+			exec_2_cmd(cmd, envp, &heredocc,all);
+		while (heredocc)
+		{
+			close(heredocc->fd_pipe_heredoc);
+			heredocc = heredocc->next;
+        }
         ft_free_cmd(cmd);
 		heredocc = NULL;
     }
