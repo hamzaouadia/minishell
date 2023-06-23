@@ -127,7 +127,7 @@ int			ft_exp_del(char c);
 int	        ft_exp_check(char c);
 char		*ft_new_arg(char *arg, int i, char *en, int x);
 char		*ft_check_var(char *arg, int i, int x);
-char		*ft_expand_var(char *arg);
+char		*ft_expand_var(char *arg, int ex);
 
 
 int			command_argument(char *str, int i, t_command *command);

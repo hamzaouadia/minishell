@@ -9,6 +9,19 @@ void	my_env(t_commnd *cmd, t_env *lst)
 	i = 0;
 	current = lst;
 	x = count_args(cmd->cmd);
+    while (lst)
+    {
+        if (ft_strcmp(lst->key, "PATH") == 0)
+            break ;
+        lst = lst->next;
+    }
+    if (lst == NULL)
+	{
+		printf("env : No such file or directory\n");
+		g_global.exit_code = 127;
+        lst = current;
+		return ;
+	}
     printf ("%s\n", current->key);
 	if (x >= 2)
 	{

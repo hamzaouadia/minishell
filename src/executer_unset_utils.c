@@ -27,10 +27,10 @@ void	unset_helper2(t_commnd *cmd, int i, t_env **env, t_utils utils)
 			{
 				previous->next = current->next;
 				(free(current->key), free(current->value));
-				free(current);
-				utils.flag = 1;
+    			utils.flag = 1;
 			}
 		}
+        
 		previous = current;
 		current = current->next;
 	}

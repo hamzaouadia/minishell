@@ -230,7 +230,7 @@ char	*ft_check_var(char *arg, int i, int x)
 	return (arg);
 }
 
-char	*ft_expand_var(char *arg)
+char	*ft_expand_var(char *arg, int ex)
 {
 	int	i;
 
@@ -238,7 +238,7 @@ char	*ft_expand_var(char *arg)
 	while (arg[i])
 	{
         g_global.exp_len = 0;
-		if (arg[i] == '\'')
+		if (arg[i] == '\'' && ex == 0)
 		{
 			i++;
 			while (arg[i] && arg[i] != '\'')
@@ -258,6 +258,15 @@ char	*ft_expand_var(char *arg)
 					i++;
 			}
 		}
+        if (arg[i] == '<' && arg[i + 1] == '<')
+        {
+            while (arg[i] && arg[i] == '<')
+                i++;
+            while (arg[i] && arg[i] == ' ')
+                i++;
+            while (arg[i] && arg[i] != ' ')
+                i++;    
+        }
 		if (arg[i] == '$' && (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$'))
         {
 			arg = ft_check_var(arg, i, 1);

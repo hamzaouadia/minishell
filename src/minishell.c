@@ -119,6 +119,27 @@ void    ft_free_oldlist(t_command *command)
     }
 }
 
+void    ft_free_cmd(t_commnd *cmd)
+{
+    int i;
+    t_commnd   *tmp;
+
+    while (cmd)
+    {
+        i = 0;
+        tmp = cmd;
+        while (cmd->cmd && cmd->cmd[i])
+            free(cmd->cmd[i++]);
+        free(cmd->cmd);
+        i = 0;
+        while (cmd->file && cmd->file[i])
+            free(cmd->file[i++]);
+        free(cmd->file);
+        cmd = cmd->next;
+        free(tmp);
+    }
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	(void)av;
@@ -126,7 +147,6 @@ int	main(int ac, char **av, char **envp)
 	t_command	*command;
 	t_commnd	*cmd;
     t_env		*lst;
-	char		**ret;
 	t_all       *all;
 	t_heredoc	*heredocc;
 
@@ -134,8 +154,7 @@ int	main(int ac, char **av, char **envp)
 		return (0);
 	heredocc = NULL;
     lst = NULL;
-	ret = NULL;
-    all = malloc(sizeof(t_all));
+    all =   malloc(sizeof(t_all));
     all->heredocc = heredocc; 
 	all->fds = malloc(sizeof(t_fds)); 
 	all->utils = malloc(sizeof(t_utils));
@@ -146,21 +165,33 @@ int	main(int ac, char **av, char **envp)
 	{
 		readl = readline("minishell:$ ");
 		add_history(readl);
-        readl = ft_expand_var(readl);
+        readl = ft_expand_var(readl, 0);
 		command = ft_command(readl);
 		ft_clean_command(command);
         cmd = ft_transfer_cmd(command);
+        // int i;
+        // while (cmd->next)
+        // {
+        //     i = 0;
+        //     while (cmd->cmd[i])
+        //         printf("command = %s\n", cmd->cmd[i++]);
+        //     i = 0;
+        //     while (cmd->file[i])
+        //         printf("command = %s\n", cmd->file[i++]);
+        //     cmd = cmd->next;
+        // }
         ft_free_oldlist(command);
-        check_heredoc(cmd, &heredocc);
-		if (ft_lstsize_cmd(cmd) == 1)
-			exec_first_cmd(cmd, envp, &heredocc, all);
-		else if (ft_lstsize_cmd(cmd) >= 2)
-			exec_2_cmd(cmd, envp, &heredocc,all);
-		while (heredocc)
-		{
-			close(heredocc->fd_pipe_heredoc);
-			heredocc = heredocc->next;
-		}	
+        // check_heredoc(cmd, &heredocc);
+		// if (ft_lstsize_cmd(cmd) == 1)
+		// 	exec_first_cmd(cmd, envp, &heredocc, all);
+		// else if (ft_lstsize_cmd(cmd) >= 2)
+		// 	exec_2_cmd(cmd, envp, &heredocc,all);
+		// while (heredocc)
+		// {
+		// 	close(heredocc->fd_pipe_heredoc);
+		// 	heredocc = heredocc->next;
+        // }
+        ft_free_cmd(cmd);
 		heredocc = NULL;
     }
 }
