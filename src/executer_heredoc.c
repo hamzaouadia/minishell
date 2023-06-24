@@ -12,6 +12,18 @@
 
 #include "minishell.h"
 
+void ft_free_herdocc(t_heredoc **heredocc)
+{
+    t_heredoc *temp;
+    
+    while ((*heredocc))
+    {
+        temp = (*heredocc);
+        (*heredocc) = (*heredocc)->next;
+        free(temp);
+    }
+}
+
 int	count_heredoc(t_commnd *cmd)
 {
 	t_commnd	*head;
@@ -54,6 +66,7 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 	char	*heredoc;
 	int		fd[2];
 
+    (void)heredocc;
 	pipe(fd);
 	while (1)
 	{
@@ -63,12 +76,15 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 		heredoc = ft_expand_var(heredoc, 1);
 		write(fd[1], heredoc, ft_strlen(heredoc));
 		write(fd[1], "\n", 1);
+        free(heredoc);
 	}
+    free(heredoc);
 	close(fd[1]);
 	if (check_find_herdoc(&cmd, i))
 		close(fd[0]);
 	else
 		ft_lstadd_back_heredoc(heredocc, ft_lstnew_heredoc(fd[0]));
+    ft_free_herdocc(heredocc);
 }
 
 void	check_heredoc(t_commnd *cmd, t_heredoc **heredoc)
@@ -81,7 +97,6 @@ void	check_heredoc(t_commnd *cmd, t_heredoc **heredoc)
 	head = cmd;
 	i = 0;
 	num_heredoc = count_heredoc(cmd);
-	delimit = ft_calloc(1, 1);
 	if (num_heredoc > 16)
 		print_erros_heredoc();
 	while (cmd->next)
@@ -98,6 +113,5 @@ void	check_heredoc(t_commnd *cmd, t_heredoc **heredoc)
 		}
 		cmd = cmd->next;
 	}
-	free(delimit);
 	cmd = head;
 }
