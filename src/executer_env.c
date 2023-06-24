@@ -33,27 +33,12 @@ int    ft_my_env_cond(t_commnd *cmd, t_env *lst, int x)
 	}
     return (0);
 }
-
-void	my_env(t_commnd *cmd, t_env *lst)
+void    ft_print_env(t_env *current)
 {
     char    *str_key;
     char    *str_var;
-	int		i;
-	int		x;
-	t_env	*current;
 
-	i = 0;
-	current = lst;
-	x = count_args(cmd->cmd);
-	while (lst)
-	{
-		if (ft_strcmp(lst->key, "PATH") == 0)
-			break ;
-		lst = lst->next;
-	}
-	if (ft_my_env_cond(cmd, lst, x))
-        return ;
-	while (current)
+    while (current)
 	{
 		if (current->value)
         {
@@ -64,7 +49,24 @@ void	my_env(t_commnd *cmd, t_env *lst)
             free(str_var);
         }
 		current = current->next;
-		i++;
 	}
+}
+
+void	my_env(t_commnd *cmd, t_env *lst)
+{
+	int		x;
+	t_env	*current;
+
+	current = lst;
+	x = count_args(cmd->cmd);
+	while (lst)
+	{
+		if (ft_strcmp(lst->key, "PATH") == 0)
+			break ;
+		lst = lst->next;
+	}
+	if (ft_my_env_cond(cmd, lst, x))
+        return ;
+	ft_print_env(current);
 	g_global.exit_code = 0;
 }

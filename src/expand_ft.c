@@ -113,7 +113,6 @@ char	*ft_check_var(char *arg, int i, int x)
 		}
 		if (ft_exp_del(arg[j]) == 1 && g_global.en[e][k] == '=')
 		{
-            printf("***%c***\n",arg[j]);
 			arg = ft_new_arg(arg, i, g_global.en[e] + k + 1, x);
 			return (arg);
 		}
@@ -150,7 +149,8 @@ char *ft_double_Qexp(char *arg, int *i)
 {
     if (arg[*i] == '"')
 	{
-		while (arg[*i] && arg[++(*i)] != '"')
+        (*i)++;
+		while (arg[*i] && arg[(*i)] != '"')
 		{
 			if (arg[*i] == '$' && (ft_exp_check(arg[*i + 1]) == 0
 					|| arg[*i + 1] == '$'))
@@ -187,16 +187,10 @@ char	*ft_expand_var(char *arg, int ex)
 	}
 	return (arg);
 }
-
-char	**nodes_counter(t_env **env)
+int ft_env_len(t_env **env)
 {
-	int		i;
-	char	*str1;
-	char	*str2;
-	char	*str3;
-	char	*str4;
-	char	**en;
-	t_env	*tmp;
+    int i;
+    t_env	*tmp;
 
 	tmp = *env;
 	i = 0;
@@ -206,17 +200,28 @@ char	**nodes_counter(t_env **env)
 		i++;
 	}
 	*env = tmp;
+    return (i);
+}
+
+char	**nodes_counter(t_env **env)
+{
+	int		i;
+	char	*str1;
+	char	*str2;
+	char	*str3;
+	char	*str4;
+	char	**en;
+	
+	i = ft_env_len(env);
 	en = ft_calloc(i + 1, sizeof(char *));
-	i = 0;
-    tmp = *env;
+    i = 0;
 	while ((*env))
 	{
 		str1 = ft_strdup((*env)->value);
 		str2 = ft_strdup((*env)->key);
 		str3 = ft_strjoin(str2, "=");
 		str4 = ft_strjoin(str3, str1);
-		en[i] = ft_strdup(str4);
-		i++;
+		en[i++] = ft_strdup(str4);
 		(*env) = (*env)->next;
 		free(str1);
 		free(str2);
@@ -224,6 +229,5 @@ char	**nodes_counter(t_env **env)
 		free(str4);
 	}
 	en[i] = NULL;
-	*env = tmp;
 	return (en);
 }

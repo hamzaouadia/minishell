@@ -71,14 +71,15 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 	{
 		heredoc = readline("< ");
 		if (ft_strcmp(heredoc, delimit) == 0)
+        {
+            free(heredoc);
 			break ;
+        }
 		heredoc = ft_expand_var(heredoc, 1);
-        printf("|%s|\n", heredoc);
 		write(fd[1], heredoc, ft_strlen(heredoc));
 		write(fd[1], "\n", 1);
         free(heredoc);
 	}
-    free(heredoc);
 	close(fd[1]);
 	if (check_find_herdoc(&cmd, i))
 		close(fd[0]);

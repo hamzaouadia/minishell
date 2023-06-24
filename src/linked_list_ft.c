@@ -18,7 +18,6 @@ t_argument	*ft_lstnew_arg(void *arg)
 	t_argument	*argument;
 
 	argument = malloc(sizeof(t_argument));
-	//printf("leak detected : %p\n", argument);
 	if (!argument)
 		exit (0);
 	argument->arg = arg;
