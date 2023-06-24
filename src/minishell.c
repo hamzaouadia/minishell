@@ -183,7 +183,7 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		g_global.en = nodes_counter(&lst);
-		readl = readline("minishell:$ ");
+		signalsss(&readl);
 		add_history(readl);
 		readl = ft_expand_var(readl, 0);
 		command = ft_command(readl);

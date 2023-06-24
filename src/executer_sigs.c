@@ -21,6 +21,8 @@ void	signalsss(char **cmd_line)
 	tcgetattr(0, &oldterm);
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(0, TCSANOW, &term);
-	*cmd_line = readline("minishell> ");
+	*cmd_line = readline("minishell$ ");
+    if (!(*cmd_line))
+        exit (0);
 	tcsetattr(0, TCSANOW, &oldterm);
 }
