@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executer_bultins_check.c                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/23 09:20:48 by aaouassa          #+#    #+#             */
+/*   Updated: 2023/06/23 09:21:21 by aaouassa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	exec_builtins(t_commnd *cmd, t_env *lst)
@@ -19,7 +31,7 @@ void	exec_builtins(t_commnd *cmd, t_env *lst)
 		my_pwd(0, lst);
 	else if (ft_strcmp(cmd->cmd[0], "unset") == 0)
 		my_unset(cmd, &lst);
-    free (utils);
+	free (utils);
 }
 
 int	check_builtins(t_commnd *cmd)

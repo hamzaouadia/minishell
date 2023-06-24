@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executer_exec_cmd.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/23 09:28:51 by aaouassa          #+#    #+#             */
+/*   Updated: 2023/06/23 09:31:35 by aaouassa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	ftPrintTowDim(char **ptr)
@@ -20,7 +32,6 @@ void	ftPrintTowDim(char **ptr)
 void	open_files(t_commnd *cmd, t_fds *fds, t_heredoc **heredocc)
 {
 	int	i;
-	//dprintf(2, "-L<>%p\n", heredocc);
 
 	fds->fd_in = -1;
 	fds->fd_out = -1;
@@ -37,7 +48,7 @@ void	open_files(t_commnd *cmd, t_fds *fds, t_heredoc **heredocc)
 			if (fds->fd_out == -1)
 				print_errors_files();
 		}
-		else if (ft_strcmp(cmd->file[i], "<<") == 0)	
+		else if (ft_strcmp(cmd->file[i], "<<") == 0)
 			fds->fd_in = (*heredocc)->fd_pipe_heredoc;
 		i++;
 	}
@@ -45,7 +56,6 @@ void	open_files(t_commnd *cmd, t_fds *fds, t_heredoc **heredocc)
 
 int	open_files_bu_helper(t_commnd *cmd, t_fds *fds, int i)
 {
-	
 	if (ft_strcmp(cmd->file[i], "<") == 0)
 	{
 		fds->fd_in = open(cmd->file[i + 1], O_RDONLY, 0644);
@@ -96,7 +106,6 @@ int	open_files_bu(t_commnd *cmd, t_fds *fds, t_heredoc **heredocc)
 void	exec_first_cmd(t_commnd *cmd, char **envp, t_heredoc **heredocc,
 		t_all *all)
 {
-	//ftPrintTowDim(cmd->cmd);
 	int	pid_fork;
 	int	out;
 
@@ -107,7 +116,7 @@ void	exec_first_cmd(t_commnd *cmd, char **envp, t_heredoc **heredocc,
 	if (cmd->cmd == NULL)
 		open_files_bu(cmd, all->fds, heredocc);
 	if (check_builtins(cmd) == 1)
-	{        
+	{
 		if (open_files_bu(cmd, all->fds, heredocc) == 1)
 			return ;
 		if (all->fds->fd_out != -1)
@@ -118,7 +127,7 @@ void	exec_first_cmd(t_commnd *cmd, char **envp, t_heredoc **heredocc,
 		pid_fork = fork();
 	if (pid_fork == -1)
 		print_errors_fork();
-	if (pid_fork == 0)	
+	if (pid_fork == 0)
 		exec_one_cmd(cmd, envp, all, heredocc);
 	else
 		wait(NULL);

@@ -37,5 +37,5 @@ $(OBJ_DIR)/%.o : %.c $(OBJ_DIR)
 		@$(CC) $(CFLAGS) -I $(INC_DIR) -c  $< -o $@
 
 $(NAME) : $(HEADERS) $(OBJS)
-		@$(CC) -lreadline $(CFLAGS) -I $(INC_DIR) $(OBJS) -o $@
+		@$(CC) -lreadline -L /goinfre/haouadia/homebrew/opt/readline/lib -I /goinfre/haouadia/homebrew/opt/readline/include $(CFLAGS) -I $(INC_DIR) $(OBJS) -o $@
 		

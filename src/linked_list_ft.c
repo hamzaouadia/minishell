@@ -8,7 +8,7 @@ t_red	*ft_lstnew_red(void *rd)
 	if (!red)
 		exit (0);
 	red->rd = rd;
-    red->fl = rd;
+	red->fl = rd;
 	red->next = NULL;
 	return (red);
 }
@@ -18,6 +18,7 @@ t_argument	*ft_lstnew_arg(void *arg)
 	t_argument	*argument;
 
 	argument = malloc(sizeof(t_argument));
+	//printf("leak detected : %p\n", argument);
 	if (!argument)
 		exit (0);
 	argument->arg = arg;

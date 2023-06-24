@@ -1,13 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executer_heredoc.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/23 09:36:01 by aaouassa          #+#    #+#             */
+/*   Updated: 2023/06/23 09:39:46 by aaouassa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	count_heredoc(t_commnd *cmd)
 {
-    t_commnd *head;
+	t_commnd	*head;
+	int			counter;
+	int			i;
 
-    head = cmd;
-	int	counter;
-	int	i;
-
+	head = cmd;
 	counter = 0;
 	while (cmd->next)
 	{
@@ -20,7 +31,7 @@ int	count_heredoc(t_commnd *cmd)
 		}
 		cmd = cmd->next;
 	}
-    cmd = head;
+	cmd = head;
 	return (counter);
 }
 
@@ -49,7 +60,7 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 		heredoc = readline("< ");
 		if (ft_strcmp(heredoc, delimit) == 0)
 			break ;
-        heredoc = ft_expand_var(heredoc, 1);
+		heredoc = ft_expand_var(heredoc, 1);
 		write(fd[1], heredoc, ft_strlen(heredoc));
 		write(fd[1], "\n", 1);
 	}
@@ -62,12 +73,12 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 
 void	check_heredoc(t_commnd *cmd, t_heredoc **heredoc)
 {
-    t_commnd *head;
-	int		i;
-	int		num_heredoc;
-	char	*delimit;
+	t_commnd	*head;
+	int			i;
+	int			num_heredoc;
+	char		*delimit;
 
-    head = cmd;
+	head = cmd;
 	i = 0;
 	num_heredoc = count_heredoc(cmd);
 	delimit = ft_calloc(1, 1);
@@ -87,6 +98,6 @@ void	check_heredoc(t_commnd *cmd, t_heredoc **heredoc)
 		}
 		cmd = cmd->next;
 	}
-    free(delimit);
-    cmd = head;
+	free(delimit);
+	cmd = head;
 }

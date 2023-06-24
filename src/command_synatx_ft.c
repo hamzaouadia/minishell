@@ -39,10 +39,11 @@ int	command_argument(char *str, int i, t_command *command)
 					i++;
 			}
 			else
-			{
-				printf("-bash: syntax error near unexpected token\n");
-				exit (0);
-			}
+            {
+                printf("-bash: syntax error near unexpected token\n");
+                g_global.exit_code = 258;
+                return (-1);
+            }
 			if (str[i] && str[i] != '<' && str[i] != '>'
 				&& command->cmnd == NULL && str[i] != '|')
 			{
@@ -56,7 +57,7 @@ int	command_argument(char *str, int i, t_command *command)
 				while (str[i] == ' ' || str[i] == '\t')
 					i++;
 			}
-            command->red->next = ft_lstnew_red(NULL);
+			command->red->next = ft_lstnew_red(NULL);
 			command->red = command->red->next;
 		}
 		else
@@ -111,12 +112,17 @@ t_command	*ft_command(char *str)
 		if (str[i] == '|')
 			command->pipe = str[i++];
 		i = command_syntax(str, i, command);
+        if  (i == -1)
+        {
+            free (str);
+            return (NULL);
+        }
 		while (str[i] == ' ' || str[i] == '\t')
 			i++;
 		command->next = ft_cmndnew(NULL);
 		command = command->next;
 	}
-    command = head;
-    free(str);
+	command = head;
+	free(str);
 	return (command);
 }

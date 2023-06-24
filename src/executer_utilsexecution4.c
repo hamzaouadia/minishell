@@ -49,7 +49,7 @@ int	ft_lstsize_cmd(t_commnd *lst)
 	count = 0;
 	head = lst;
 	while (head->next != NULL)
-	{        
+	{
 		count++;
 		head = head->next;
 	}

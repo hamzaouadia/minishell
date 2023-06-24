@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executer_utils_exec_cmd2.c                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/23 09:47:22 by aaouassa          #+#    #+#             */
+/*   Updated: 2023/06/23 09:48:05 by aaouassa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	exec_one_cmd(t_commnd *cmd, char **envp, t_all *all,
@@ -12,7 +24,6 @@ void	exec_one_cmd(t_commnd *cmd, char **envp, t_all *all,
 		(dup2(all->fds->fd_out, 1), close(all->fds->fd_out));
 	if (cmd->cmd[0])
 	{
-		
 		c = check_path(all->lst, cmd);
 		if (!c)
 			print_errors_path();
