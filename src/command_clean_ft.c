@@ -99,51 +99,58 @@ char	*ft_clean_quotes(char *arg)
 	return (new);
 }
 
-int	ft_clean_command(t_command *command)
+int    ft_clean_arg_red(t_argument *argument, t_red *red)
 {
-	t_command	*head_cmd;
-	t_argument	*head_arg;
-	t_red		*head_red;
+	while (argument->next)
+	{
+		if (ft_quotes_syntax(argument->arg) == -1)
+            return (-1);
+		argument->arg = ft_clean_quotes(argument->arg);
+		argument = argument->next;
+	}
+	while (red->next)
+	{
+        if (ft_quotes_syntax(red->fl) == -1)
+            return (-1);
+		red->fl = ft_clean_quotes(red->fl);
+		red = red->next;
+	}
+    return (0);
+}
 
-	head_cmd = command;
-	if (command->pipe != '\0')
+int ft_syntax_condition(t_command *command)
+{
+    if (command->pipe != '\0' && !command->cmnd
+		&& !command->argument->arg && !command->red->rd)
 	{
 		printf("-bash: syntax error\n");
 		g_global.exit_code = 258;
         return (-1);
 	}
-	while (command->next)
+	if (ft_syntax_red(command->red) == -1)
+        return (-1);
+    return (0);
+}
+
+int	ft_clean_command(t_command *command)
+{
+	t_command	*head_cmd;
+
+	head_cmd = command;
+	if (head_cmd->pipe != '\0')
 	{
-		if (command->pipe != '\0' && !command->cmnd
-		&& !command->argument->arg && !command->red->rd)
-        {
-            printf("-bash: syntax error\n");
-            g_global.exit_code = 258;
-            return (-1);
-        }
-		head_arg = command->argument;
-		head_red = command->red;
-		if (ft_syntax_red(command->red) == -1)
-            return -1;
-		command->cmnd = ft_clean_quotes(command->cmnd);
-		while (command->argument->next)
-		{
-			if (ft_quotes_syntax(command->argument->arg) == -1)
-                return -1;
-			command->argument->arg = ft_clean_quotes(command->argument->arg);
-			command->argument = command->argument->next;
-		}
-		while (command->red->next)
-		{
-			if (ft_quotes_syntax(command->red->fl))
-                return -1;
-			command->red->fl = ft_clean_quotes(command->red->fl);
-			command->red = command->red->next;
-		}
-		command->argument = head_arg;
-		command->red = head_red;
-		command = command->next;
+		printf("-bash: syntax error\n");
+		g_global.exit_code = 258;
+        return (-1);
 	}
-	command = head_cmd;
+	while (head_cmd->next)
+	{
+		if (ft_syntax_condition(head_cmd) == -1)
+            return (-1);
+		head_cmd->cmnd = ft_clean_quotes(head_cmd->cmnd);
+		if (ft_clean_arg_red(head_cmd->argument, head_cmd->red) == -1)
+            return (-1);
+		head_cmd = head_cmd->next;
+	}
     return (0);
 }

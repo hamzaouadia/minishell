@@ -1,5 +1,12 @@
 #include "minishell.h"
 
+int ft_white_spaces(char *str, int i)
+{
+	while (str[i] == ' ' || str[i] == '\t')
+		i++;
+    return (i);
+}
+
 int	command_argument(char *str, int i, t_command *command)
 {
 	t_argument	*head_ar;
@@ -12,31 +19,27 @@ int	command_argument(char *str, int i, t_command *command)
 	while (str[i])
 	{
 		j = 0;
-		while (str[i] == ' ' || str[i] == '\t')
-			i++;
+		i = ft_white_spaces(str, i);
 		if (str[i] == '\0' || str[i] == '|')
 			break ;
 		if (str[i] == '<' || str[i] == '>')
 		{
 			len = ft_spchar_len(str + i, '<', '>');
-			command->red->rd = calloc((len + 1), sizeof(char));
-			command->red->rd[j] = '\0';
+			head_red->rd = calloc((len + 1), sizeof(char));
+			head_red->rd[j] = '\0';
 			while (len > j)
-				command->red->rd[j++] = str[i++];
-			while (str[i] == ' ' || str[i] == '\t')
-				i++;
+				head_red->rd[j++] = str[i++];
+			i = ft_white_spaces(str, i);
 			if (str[i] && str[i] != '<' && str[i] != '>' && str[i] != '|')
 			{
-				while (str[i] == ' ' || str[i] == '\t')
-					i++;
+				i = ft_white_spaces(str, i);
 				j = 0;
 				len = ft_arg_len(str + i);
-				command->red->fl = calloc((len + 1), sizeof(char));
+				head_red->fl = calloc((len + 1), sizeof(char));
 				while (len > j)
-					command->red->fl[j++] = str[i++];
-				command->red->fl[j] = '\0';
-				while (str[i] == ' ' || str[i] == '\t')
-					i++;
+					head_red->fl[j++] = str[i++];
+				head_red->fl[j] = '\0';
+				i = ft_white_spaces(str, i);
 			}
 			else
             {
@@ -47,32 +50,28 @@ int	command_argument(char *str, int i, t_command *command)
 			if (str[i] && str[i] != '<' && str[i] != '>'
 				&& command->cmnd == NULL && str[i] != '|')
 			{
-				while (str[i] == ' ' || str[i] == '\t')
-					i++;
+				i = ft_white_spaces(str, i);
 				j = 0;
 				len = ft_arg_len(str + i);
 				command->cmnd = calloc((len + 1), sizeof(char));
 				while (len > j)
 					command->cmnd[j++] = str[i++];
-				while (str[i] == ' ' || str[i] == '\t')
-					i++;
+				i = ft_white_spaces(str, i);
 			}
-			command->red->next = ft_lstnew_red(NULL);
-			command->red = command->red->next;
+			head_red->next = ft_lstnew_red(NULL);
+			head_red = head_red->next;
 		}
 		else
 		{
 			len = ft_arg_len(str + i);
-			command->argument->arg = calloc((len + 1), sizeof(char));
+			head_ar->arg = calloc((len + 1), sizeof(char));
 			while (len > j)
-				command->argument->arg[j++] = str[i++];
-			command->argument->arg[j] = '\0';
-			command->argument->next = ft_lstnew_arg(NULL);
-			command->argument = command->argument->next;
+				head_ar->arg[j++] = str[i++];
+			head_ar->arg[j] = '\0';
+			head_ar->next = ft_lstnew_arg(NULL);
+			head_ar = head_ar->next;
 		}
 	}
-	command->argument = head_ar;
-	command->red = head_red;
 	return (i);
 }
 
@@ -82,8 +81,7 @@ int	command_syntax(char *str, int i, t_command *command)
 	int	j;
 
 	j = 0;
-	while (str[i] == ' ' || str[i] == '\t')
-		i++;
+	i = ft_white_spaces(str, i);
 	len = ft_arg_len(str + i);
 	if (len != 0)
 	{
@@ -107,22 +105,20 @@ t_command	*ft_command(char *str)
 	i = 0;
 	while (str[i])
 	{
-		while (str[i] == ' ' || str[i] == '\t')
-			i++;
+		i = ft_white_spaces(str, i);
 		if (str[i] == '|')
-			command->pipe = str[i++];
-		i = command_syntax(str, i, command);
+			head->pipe = str[i++];
+		i = command_syntax(str, i, head);
         if  (i == -1)
         {
             free (str);
+		    ft_free_oldlist(command);
             return (NULL);
         }
-		while (str[i] == ' ' || str[i] == '\t')
-			i++;
-		command->next = ft_cmndnew(NULL);
-		command = command->next;
+		i = ft_white_spaces(str, i);
+		head->next = ft_cmndnew(NULL);
+		head = head->next;
 	}
-	command = head;
 	free(str);
 	return (command);
 }

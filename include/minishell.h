@@ -135,6 +135,7 @@ t_command	*ft_command(char *str);
 char		**nodes_counter(t_env **env);
 char		*ft_itoa(int n);
 int	ft_count_red(char *en);
+void	ft_free_oldlist(t_command *command);
 
 /*      Exec Part            */
 int			ft_strcmp(char *s1, char *s2);

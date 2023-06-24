@@ -186,14 +186,19 @@ int	main(int ac, char **av, char **envp)
 		signalsss(&readl);
 		add_history(readl);
 		readl = ft_expand_var(readl, 0);
-		command = ft_command(readl);
-        if (command == NULL)
+        if (!(command = ft_command(readl)))
+        {
+            ft_free_env(g_global.en);
             continue;
+        }
 		if (ft_clean_command(command) == -1)
+        {
+		    ft_free_oldlist(command);
+            ft_free_env(g_global.en);
             continue;
+        }
 		cmd = ft_transfer_cmd(command);
 		ft_free_oldlist(command);
-		//printf ("%p\n", command);
 		check_heredoc(cmd, &heredocc);
 		if (ft_lstsize_cmd(cmd) == 1)
 			exec_first_cmd(cmd, envp, &heredocc, all);
