@@ -30,6 +30,7 @@ void	ft_lstadd_back(t_env **lst, t_env *new)
 {
 	t_env	*new_node;
 
+
 	new_node = NULL;
 	if (!*lst)
 	{
@@ -37,8 +38,10 @@ void	ft_lstadd_back(t_env **lst, t_env *new)
 		(*lst)->next = NULL;
 	}
 	else
+    {
 		new_node = ft_lstlast(*lst);
 		new_node->next = new;
+    }
 }
 
 t_heredoc	*ft_lstlast_herdoc(t_heredoc **lst)

@@ -211,6 +211,7 @@ int	main(int ac, char **av, char **envp)
 		}
 		ft_free_env(g_global.en);
 		ft_free_cmd(cmd);
+        ft_free_herdocc(&heredocc);
 		heredocc = NULL;
 	}
 }

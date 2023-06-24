@@ -66,7 +66,6 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 	char	*heredoc;
 	int		fd[2];
 
-    (void)heredocc;
 	pipe(fd);
 	while (1)
 	{
@@ -74,6 +73,7 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 		if (ft_strcmp(heredoc, delimit) == 0)
 			break ;
 		heredoc = ft_expand_var(heredoc, 1);
+        printf("|%s|\n", heredoc);
 		write(fd[1], heredoc, ft_strlen(heredoc));
 		write(fd[1], "\n", 1);
         free(heredoc);
@@ -84,7 +84,6 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 		close(fd[0]);
 	else
 		ft_lstadd_back_heredoc(heredocc, ft_lstnew_heredoc(fd[0]));
-    ft_free_herdocc(heredocc);
 }
 
 void	check_heredoc(t_commnd *cmd, t_heredoc **heredoc)
@@ -99,19 +98,18 @@ void	check_heredoc(t_commnd *cmd, t_heredoc **heredoc)
 	num_heredoc = count_heredoc(cmd);
 	if (num_heredoc > 16)
 		print_erros_heredoc();
-	while (cmd->next)
+	while (head->next)
 	{
 		i = 0;
-		while (cmd->file[i])
+		while (head->file[i])
 		{
-			if (ft_strcmp(cmd->file[i], "<<") == 0)
+			if (ft_strcmp(head->file[i], "<<") == 0)
 			{
-				delimit = cmd->file[i + 1];
-				read_heredoc(delimit, heredoc, i + 1, cmd);
+				delimit = head->file[i + 1];
+				read_heredoc(delimit, heredoc, i + 1, head);
 			}
 			i++;
 		}
-		cmd = cmd->next;
+		head = head->next;
 	}
-	cmd = head;
 }

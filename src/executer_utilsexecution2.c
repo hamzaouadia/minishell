@@ -99,12 +99,3 @@ size_t	ft_strlen2(char *str)
 		len++;
 	return (len);
 }
-// void	leaks_removal(t_leaks **leaks, void *ptr)
-// {
-// 	t_leaks	*garbage;
-
-// 	garbage = malloc(sizeof(t_leaks));
-// 	garbage->leak = ptr;
-// 	garbage->next = *(leaks);
-// 	*leaks = garbage;
-// }

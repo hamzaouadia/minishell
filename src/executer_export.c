@@ -86,9 +86,7 @@ t_env	*sort_export(t_env *lst)
 t_env	*my_export(t_commnd *cmd, t_env *lst, t_utils *utils)
 {
 	t_env	*current;
-	char	*str;
-
-	str = NULL;
+	
 	current = lst;
 	utils->i = 0;
 	print_export(cmd, current);
