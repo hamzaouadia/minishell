@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution_utils3.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 16:13:23 by aaouassa          #+#    #+#             */
+/*   Updated: 2023/06/24 16:13:25 by aaouassa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_substr(char *s, unsigned int start, size_t len)
@@ -8,16 +20,16 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	i = 0;
 	if (start >= ft_strlen2(s))
 	{
-		a = malloc(sizeof(char)); /*free*/
+		a = malloc(sizeof(char));
 		if (!a)
 			return (0);
 		a[0] = '\0';
 		return (a);
 	}
 	if (len > ft_strlen2(s))
-		a = malloc(sizeof(char) * (ft_strlen(s) - start + 1));//free
+		a = malloc(sizeof(char) * (ft_strlen(s) - start + 1));
 	else
-		a = malloc (sizeof(char) * len + 1);//free
+		a = malloc (sizeof(char) * len + 1);
 	if (!a)
 		return (0);
 	while (s[start + i] && i < len)
@@ -39,7 +51,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	i = 0;
 	if (!s1 || !s2)
 		return (NULL);
-	a = malloc(sizeof (char) * (ft_strlen(s1) + ft_strlen(s2) + 1)); //free
+	a = malloc(sizeof (char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!a)
 		return (0);
 	while (s1[i])

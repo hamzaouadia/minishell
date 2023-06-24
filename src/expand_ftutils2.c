@@ -36,3 +36,10 @@ int	ft_count_red(char *en)
 	}
 	return (red);
 }
+
+void	ft_protect_var(char *en, int len, int x)
+{
+	if ((strchr(en, '>') || strchr(en, '<')) && x == 1)
+		g_global.exp_len = len + ft_count_red(en);
+}
+

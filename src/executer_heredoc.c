@@ -6,22 +6,22 @@
 /*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 09:36:01 by aaouassa          #+#    #+#             */
-/*   Updated: 2023/06/23 09:39:46 by aaouassa         ###   ########.fr       */
+/*   Updated: 2023/06/24 20:20:22 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void ft_free_herdocc(t_heredoc **heredocc)
+void	ft_free_herdocc(t_heredoc **heredocc)
 {
-    t_heredoc *temp;
-    
-    while ((*heredocc))
-    {
-        temp = (*heredocc);
-        (*heredocc) = (*heredocc)->next;
-        free(temp);
-    }
+	t_heredoc	*temp;
+
+	while ((*heredocc))
+	{
+		temp = (*heredocc);
+		(*heredocc) = (*heredocc)->next;
+		free(temp);
+	}
 }
 
 int	count_heredoc(t_commnd *cmd)
@@ -71,15 +71,16 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 	{
 		heredoc = readline("< ");
 		if (ft_strcmp(heredoc, delimit) == 0)
-        {
-            free(heredoc);
+		{
+			free(heredoc);
 			break ;
-        }
+		}
 		heredoc = ft_expand_var(heredoc, 1);
 		write(fd[1], heredoc, ft_strlen(heredoc));
 		write(fd[1], "\n", 1);
-        free(heredoc);
+		free(heredoc);
 	}
+	printf("***********\n");
 	close(fd[1]);
 	if (check_find_herdoc(&cmd, i))
 		close(fd[0]);

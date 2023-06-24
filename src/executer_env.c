@@ -6,18 +6,18 @@
 /*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 09:25:48 by aaouassa          #+#    #+#             */
-/*   Updated: 2023/06/23 15:28:34 by aaouassa         ###   ########.fr       */
+/*   Updated: 2023/06/24 16:01:22 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int    ft_my_env_cond(t_commnd *cmd, t_env *lst, int x)
+int	ft_my_env_cond(t_commnd *cmd, t_env *lst, int x)
 {
 	t_env	*current;
 
 	current = lst;
-    if (lst == NULL)
+	if (lst == NULL)
 	{
 		printf("env : No such file or directory\n");
 		g_global.exit_code = 127;
@@ -31,23 +31,24 @@ int    ft_my_env_cond(t_commnd *cmd, t_env *lst, int x)
 		g_global.exit_code = 127;
 		return (1);
 	}
-    return (0);
+	return (0);
 }
-void    ft_print_env(t_env *current)
-{
-    char    *str_key;
-    char    *str_var;
 
-    while (current)
+void	ft_print_env(t_env *current)
+{
+	char	*str_key;
+	char	*str_var;
+
+	while (current)
 	{
 		if (current->value)
-        {
-            str_key = ft_strjoin(current->key, "=");
-            str_var = ft_strjoin(str_key, current->value);
+		{
+			str_key = ft_strjoin(current->key, "=");
+			str_var = ft_strjoin(str_key, current->value);
 			printf("%s\n", str_var);
-            free(str_key);
-            free(str_var);
-        }
+			free(str_key);
+			free(str_var);
+		}
 		current = current->next;
 	}
 }
@@ -66,7 +67,7 @@ void	my_env(t_commnd *cmd, t_env *lst)
 		lst = lst->next;
 	}
 	if (ft_my_env_cond(cmd, lst, x))
-        return ;
+		return ;
 	ft_print_env(current);
 	g_global.exit_code = 0;
 }

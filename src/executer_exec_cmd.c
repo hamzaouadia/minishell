@@ -6,28 +6,11 @@
 /*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 09:28:51 by aaouassa          #+#    #+#             */
-/*   Updated: 2023/06/23 09:31:35 by aaouassa         ###   ########.fr       */
+/*   Updated: 2023/06/24 20:10:24 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	ftPrintTowDim(char **ptr)
-{
-	int	i;
-
-	i = 0;
-	if (!ptr)
-	{
-		printf("ptr not found!");
-		return ;
-	}
-	while (ptr[i])
-	{
-		printf("ptr[%d] = |%s|\n", i, ptr[i]);
-		i++;
-	}
-}
 
 void	open_files(t_commnd *cmd, t_fds *fds, t_heredoc **heredocc)
 {

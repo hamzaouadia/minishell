@@ -71,12 +71,18 @@ typedef struct utils
 
 typedef struct s_global
 {
-	int					exit_code;
-	char				**en;
-	char				*check;
-	t_env				*env;
-	int					exp_len;
-}						t_global;
+	char			*str1;
+	char			*str2;
+	char			*str3;
+	char			*str4;
+	int				exit_code;
+	char			**en;
+	char			*check;
+	t_env			*env;
+	int				exp_len;
+}					t_global;
+
+t_global				g_global;
 
 typedef struct pipe
 {
@@ -85,7 +91,6 @@ typedef struct pipe
 
 // for envirnmt
 
-t_global				g_global;
 
 typedef struct s_heredoc
 {
@@ -115,10 +120,10 @@ t_argument	*ft_lstnew_arg(void *arg);
 t_command	*ft_cmndnew(char *str);
 
 int			ft_quotes_len(char *str);
-int		ft_quotes_syntax(char *str);
-int		ft_syntax_red(t_red *red);
+int			ft_quotes_syntax(char *str);
+int			ft_syntax_red(t_red *red);
 char		*ft_clean_quotes(char *arg);
-int		ft_clean_command(t_command *command);
+int			ft_clean_command(t_command *command);
 
 int			ft_spchar_len(char *str, char d1, char d2);
 int			ft_arg_len(char *str);
@@ -134,9 +139,36 @@ t_command	*ft_command(char *str);
 t_command	*ft_command(char *str);
 char		**nodes_counter(t_env **env);
 char		*ft_itoa(int n);
-int	ft_count_red(char *en);
-void	ft_free_oldlist(t_command *command);
-void ft_free_herdocc(t_heredoc **heredocc);
+int			ft_count_red(char *en);
+void		ft_free_oldlist(t_command *command);
+void		ft_free_herdocc(t_heredoc **heredocc);
+
+int			ft_white_spaces(char *str, int i);
+int			ft_file_condition(char *str, int i, t_command *command);
+int			ft_cmnd_after_red(char *str, int i, t_command *command);
+int			ft_arg_len(char *str);
+
+
+int			ft_spchar_len(char *str, char d1, char d2);
+void		put_str(char *string, long long int nb, int size);
+int			string_size(long long int nb);
+int			ft_exp_check(char c);
+int			ft_exp_del(char c);
+int			ft_count_red(char *en);
+void		ft_protect_var(char *en, int len, int x);
+char		*ft_remove_and_excode(char *arg, int i);
+int			ft_expand_condition(char *arg, int i);
+int			ft_singl_qexp(char *arg, int i, int ex);
+char		*ft_double_qexp(char *arg, int *i);
+char		*ft_expand_var(char *arg, int ex);
+int			ft_env_len(t_env **env);
+char		*ft_remove_var(char *arg, int i);
+
+void		ft_free_cmd(t_commnd *cmd);
+void		ft_free_env(char **en);
+int			ft_count_file(t_red *red);
+int			ft_count_arg(t_argument *argument);
+t_commnd	*ft_new_cmd(void);
 
 /*      Exec Part            */
 int			ft_strcmp(char *s1, char *s2);

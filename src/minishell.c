@@ -1,45 +1,6 @@
 #include "minishell.h"
 
-t_commnd	*ft_new_cmd(void)
-{
-	t_commnd	*cmnd;
-
-	cmnd = malloc(sizeof(t_commnd));
-	if (!cmnd)
-		exit (0);
-	cmnd->cmd = NULL;
-	cmnd->file = NULL;
-	cmnd->next = NULL;
-	return (cmnd);
-}
-
-int	ft_count_arg(t_argument *argument)
-{
-	int	i;
-
-	i = 0;
-	while (argument->arg)
-	{
-		argument = argument->next;
-		i++;
-	}
-	return (i);
-}
-
-int	ft_count_file(t_red *red)
-{
-	int	i;
-
-	i = 0;
-	while (red->rd)
-	{
-		red = red->next;
-		i += 2;
-	}
-	return (i);
-}
-
-void    ft_transfer_arg(t_argument *argument, t_red *red, t_commnd *cmd, int i)
+void	ft_transfer_arg(t_argument *argument, t_red *red, t_commnd *cmd, int i)
 {
 	while (argument->arg)
 	{
@@ -59,15 +20,16 @@ void    ft_transfer_arg(t_argument *argument, t_red *red, t_commnd *cmd, int i)
 	}
 	cmd->file[i] = NULL;
 }
-int ft_transfer_command(t_command *command, int i, t_commnd *cmd)
+
+int	ft_transfer_command(t_command *command, int i, t_commnd *cmd)
 {
-    int			fl_len;
-	int			arg_len;
+	int	fl_len;
+	int	arg_len;
 
 	fl_len = 0;
 	arg_len = 0;
-    i = 0;
-    arg_len = ft_count_arg(command->argument);
+	i = 0;
+	arg_len = ft_count_arg(command->argument);
 	if (command->cmnd)
 		arg_len++;
 	fl_len = ft_count_file(command->red);
@@ -78,7 +40,7 @@ int ft_transfer_command(t_command *command, int i, t_commnd *cmd)
 		cmd->cmd[i++] = strdup(command->cmnd);
 		free(command->cmnd);
 	}
-    return (i);
+	return (i);
 }
 
 t_commnd	*ft_transfer_cmd(t_command *command)
@@ -91,9 +53,8 @@ t_commnd	*ft_transfer_cmd(t_command *command)
 	cmd_head = cmd;
 	while (command->next)
 	{
-       
 		i = ft_transfer_command(command, i, cmd);
-        ft_transfer_arg(command->argument, command->red, cmd, i);
+		ft_transfer_arg(command->argument, command->red, cmd, i);
 		command = command->next;
 		cmd->next = ft_new_cmd();
 		cmd = cmd->next;
@@ -128,38 +89,6 @@ void	ft_free_oldlist(t_command *command)
 	}
 }
 
-void	ft_free_env(char **en)
-{
-	int	i;
-
-	i = 0;
-	while (en[i])
-		free(en[i++]);
-	free(en);
-}
-
-void	ft_free_cmd(t_commnd *cmd)
-{
-	int			i;
-	t_commnd	*tmp;
-
-	while (cmd)
-	{
-		i = 0;
-		tmp = cmd;
-		while (cmd->cmd && cmd->cmd[i])
-			free(cmd->cmd[i++]);
-		free(cmd->cmd);
-		i = 0;
-		while (cmd->file && cmd->file[i])
-			free(cmd->file[i++]);
-		free(cmd->file);
-		cmd = cmd->next;
-		free(tmp);
-	}
-	free(cmd);
-}
-
 int	main(int ac, char **av, char **envp)
 {
 	char		*readl;
@@ -186,18 +115,20 @@ int	main(int ac, char **av, char **envp)
 		signalsss(&readl);
 		add_history(readl);
 		readl = ft_expand_var(readl, 0);
-        if (!(command = ft_command(readl)))
-        {
-            ft_free_env(g_global.en);
-            continue;
-        }
+
+		if (!(command = ft_command(readl)))
+		{
+			ft_free_env(g_global.en);
+			continue ;
+		}
 		if (ft_clean_command(command) == -1)
-        {
-		    ft_free_oldlist(command);
-            ft_free_env(g_global.en);
-            continue;
-        }
+		{
+			ft_free_oldlist(command);
+			ft_free_env(g_global.en);
+			continue ;
+		}
 		cmd = ft_transfer_cmd(command);
+		//printf ("|%s|\n", cmd->cmd[1]);
 		ft_free_oldlist(command);
 		check_heredoc(cmd, &heredocc);
 		if (ft_lstsize_cmd(cmd) == 1)
@@ -211,7 +142,7 @@ int	main(int ac, char **av, char **envp)
 		}
 		ft_free_env(g_global.en);
 		ft_free_cmd(cmd);
-        ft_free_herdocc(&heredocc);
+		ft_free_herdocc(&heredocc);
 		heredocc = NULL;
 	}
 }

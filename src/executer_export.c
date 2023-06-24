@@ -6,7 +6,7 @@
 /*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 09:33:56 by aaouassa          #+#    #+#             */
-/*   Updated: 2023/06/23 09:33:59 by aaouassa         ###   ########.fr       */
+/*   Updated: 2023/06/24 16:01:51 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ t_env	*sort_export(t_env *lst)
 t_env	*my_export(t_commnd *cmd, t_env *lst, t_utils *utils)
 {
 	t_env	*current;
-	
+
 	current = lst;
 	utils->i = 0;
 	print_export(cmd, current);

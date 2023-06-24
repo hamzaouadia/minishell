@@ -6,7 +6,7 @@
 /*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 09:33:07 by aaouassa          #+#    #+#             */
-/*   Updated: 2023/06/23 09:33:10 by aaouassa         ###   ########.fr       */
+/*   Updated: 2023/06/24 16:04:51 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,25 @@
 
 void	print_export(t_commnd *cmd, t_env *current)
 {
-    char    *str_key;
-    char    *str_;
-    char    *str_var;
+	char	*str_key;
+	char	*str_;
+	char	*str_var;
+
 	if (ft_strcmp(cmd->cmd[0], "export") == 0 && !cmd->cmd[1])
 	{
 		sort_export(current);
 		while (current)
 		{
-            str_key = ft_strjoin(current->key, "=");
-            str_ = ft_strjoin(current->value, "\"");
-            str_var = ft_strjoin(str_key, str_);
+			str_key = ft_strjoin(current->key, "=");
+			str_ = ft_strjoin(current->value, "\"");
+			str_var = ft_strjoin(str_key, str_);
 			if (current->value)
 				printf("declare -x %s\n", str_var);
 			else
 				printf("declare -x %s\n", current->key);
-            free (str_);
-            free (str_key);
-            free (str_var);
+			free (str_);
+			free (str_key);
+			free (str_var);
 			current = current->next;
 		}
 	}

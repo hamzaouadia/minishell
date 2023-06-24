@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 16:13:01 by aaouassa          #+#    #+#             */
+/*   Updated: 2023/06/24 16:13:06 by aaouassa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	*ft_calloc(size_t count, size_t size)
@@ -6,7 +18,7 @@ void	*ft_calloc(size_t count, size_t size)
 
 	if (size && count >= SIZE_MAX / size)
 		return (NULL);
-	p = malloc(count * size);//free
+	p = malloc(count * size);
 	if (!p)
 		return (NULL);
 	ft_bzero(p, count * size);
@@ -51,7 +63,7 @@ static char	*allocation(char *s, int n)
 	char	*a;
 	int		i;
 
-	a = malloc(sizeof(char) * n + 1);//free
+	a = malloc(sizeof(char) * n + 1);
 	if (!a)
 		return (NULL);
 	i = 0;
