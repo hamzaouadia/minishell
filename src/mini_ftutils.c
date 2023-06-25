@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_ftutils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haouadia <haouadia@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 02:42:22 by haouadia          #+#    #+#             */
-/*   Updated: 2023/06/25 02:42:24 by haouadia         ###   ########.fr       */
+/*   Updated: 2023/06/25 03:24:49 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 t_commnd	*ft_new_cmd(void)
 {
-    t_commnd	*cmnd;
+	t_commnd	*cmnd;
 
-    cmnd = malloc(sizeof(t_commnd));
-    if (!cmnd)
-        exit (0);
-    cmnd->cmd = NULL;
-    cmnd->file = NULL;
-    cmnd->next = NULL;
-    return (cmnd);
+	cmnd = malloc(sizeof(t_commnd));
+	if (!cmnd)
+		exit(0);
+	cmnd->cmd = NULL;
+	cmnd->file = NULL;
+	cmnd->next = NULL;
+	return (cmnd);
 }
 
 int	ft_count_arg(t_argument *argument)

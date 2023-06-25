@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_ft.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haouadia <haouadia@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 02:41:06 by haouadia          #+#    #+#             */
-/*   Updated: 2023/06/25 02:41:08 by haouadia         ###   ########.fr       */
+/*   Updated: 2023/06/25 03:23:56 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_fill_exp(char *exp, char *en, int j, int x)
 	k = 0;
 	while (en[k])
 	{
-		if ((en[k] == '>' || en[k] == '<' ) && x == 1)
+		if ((en[k] == '>' || en[k] == '<') && x == 1)
 		{
 			exp[j++] = '"';
 			while (en[k] == '>' || en[k] == '<')
@@ -85,46 +85,46 @@ char	*ft_remove_var(char *arg, int i)
 	return (new);
 }
 
-char    *ft_check_cond(char *arg, int i)
+char	*ft_check_cond(char *arg, int i)
 {
-    char *code;
+	char	*code;
 
-    if (arg[i + 1] == '?')
-    {
-        code = ft_itoa(g_global.exit_code);
-        arg = ft_new_arg(arg, i, code, 2);
-        free(code);
-    }
-    else if (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$')
-        arg = ft_remove_var(arg, i);
-    return (arg);
+	if (arg[i + 1] == '?')
+	{
+		code = ft_itoa(g_global.exit_code);
+		arg = ft_new_arg(arg, i, code, 2);
+		free(code);
+	}
+	else if (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$')
+		arg = ft_remove_var(arg, i);
+	return (arg);
 }
 
-char    *ft_check_var(char *arg, int i, int x)
+char	*ft_check_var(char *arg, int i, int x)
 {
-    int        j;
-    int        k;
-    t_env      *temp;
+	int		j;
+	int		k;
+	t_env	*temp;
 
-    temp = g_global.env;
-    while (temp)
-    {
-        k = 0;
-        j = i + 1;
-        while (arg[j] == temp->key[k])
-        {
-            if (temp->key[k] == '\0')
-                break ;
-            j++;
-            k++;
-        }
-        if (ft_exp_del(arg[j]) == 1 && temp->key[k] == '\0')
-        {
-            arg = ft_new_arg(arg, i, temp->value, x);
-            return (arg);
-        }
-        temp = temp->next;
-    }
-    arg = ft_check_cond(arg, i);
-    return (arg);
+	temp = g_global.env;
+	while (temp)
+	{
+		k = 0;
+		j = i + 1;
+		while (arg[j] == temp->key[k])
+		{
+			if (temp->key[k] == '\0')
+				break ;
+			j++;
+			k++;
+		}
+		if (ft_exp_del(arg[j]) == 1 && temp->key[k] == '\0')
+		{
+			arg = ft_new_arg(arg, i, temp->value, x);
+			return (arg);
+		}
+		temp = temp->next;
+	}
+	arg = ft_check_cond(arg, i);
+	return (arg);
 }

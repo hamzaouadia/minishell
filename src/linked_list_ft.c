@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   linked_list_ft.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haouadia <haouadia@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 02:41:56 by haouadia          #+#    #+#             */
-/*   Updated: 2023/06/25 02:41:58 by haouadia         ###   ########.fr       */
+/*   Updated: 2023/06/25 11:29:43 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,38 @@ t_command	*ft_cmndnew(char *str)
 	command->red = ft_lstnew_red(NULL);
 	command->argument = ft_lstnew_arg(NULL);
 	return (command);
+}
+
+t_all	*ft_all_init(char **envp)
+{
+	t_all	*all;
+
+	all = malloc(sizeof(t_all));
+	all->heredocc = NULL;
+	all->fds = malloc(sizeof(t_fds));
+	all->utils = malloc(sizeof(t_utils));
+	all->lst = NULL;
+	copy_env(envp, &all->lst);
+	g_global.env = all->lst;
+	return (all);
+}
+
+t_commnd	*ft_transfer_cmd(t_command *command)
+{
+	t_commnd	*cmd;
+	t_commnd	*cmd_head;
+	int			i;
+
+	cmd = ft_new_cmd();
+	cmd_head = cmd;
+	while (command->next)
+	{
+		i = ft_transfer_command(command, i, cmd);
+		ft_transfer_arg(command->argument, command->red, cmd, i);
+		command = command->next;
+		cmd->next = ft_new_cmd();
+		cmd = cmd->next;
+	}
+	cmd = cmd_head;
+	return (cmd);
 }

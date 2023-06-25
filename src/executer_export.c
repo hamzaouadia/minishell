@@ -6,7 +6,7 @@
 /*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 09:33:56 by aaouassa          #+#    #+#             */
-/*   Updated: 2023/06/24 16:01:51 by aaouassa         ###   ########.fr       */
+/*   Updated: 2023/06/25 03:26:57 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ t_env	*my_export(t_commnd *cmd, t_env *lst, t_utils *utils)
 	while (cmd->cmd[++utils->i])
 	{
 		if (errors_export(cmd, utils->c, utils->i) == 0)
-            continue ;
+			continue ;
 		utils->c = check_for_signe(cmd->cmd[utils->i], '=');
 		if (utils->c != -1)
 		{

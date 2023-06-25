@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_ftutils2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haouadia <haouadia@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 02:41:30 by haouadia          #+#    #+#             */
-/*   Updated: 2023/06/25 02:41:32 by haouadia         ###   ########.fr       */
+/*   Updated: 2023/06/25 03:24:37 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 int	ft_exp_check(char c)
 {
-	if ((c >= 42 && c <= 47) || c == ' ' || c == '\t' || c == 0
-		|| c == '|' || (c >= 58 && c <= 62))
+	if ((c >= 42 && c <= 47) || c == ' ' || c == '\t' || c == 0 || c == '|'
+		|| (c >= 58 && c <= 62))
 		return (1);
 	return (0);
 }
 
 int	ft_exp_del(char c)
 {
-	if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
-		|| (c >= 'A' && c <= 'Z') || c == '_')
+	if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A'
+			&& c <= 'Z') || c == '_')
 		return (0);
 	return (1);
 }
@@ -54,4 +54,3 @@ void	ft_protect_var(char *en, int len, int x)
 	if ((strchr(en, '>') || strchr(en, '<')) && x == 1)
 		g_global.exp_len = len + ft_count_red(en);
 }
-

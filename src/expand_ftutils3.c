@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_ftutils3.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haouadia <haouadia@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 02:41:39 by haouadia          #+#    #+#             */
-/*   Updated: 2023/06/25 02:41:40 by haouadia         ###   ########.fr       */
+/*   Updated: 2023/06/25 03:27:23 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,11 @@ char	*ft_double_qexp(char *arg, int *i)
 		(*i)++;
 		while (arg[*i] && arg[*i] != '"')
 		{
-			if (arg[*i] == '$' && (ft_exp_check(arg[*i + 1]) == 0
-					|| arg[*i + 1] == '$'))
+			if (arg[*i] == '$' && (ft_exp_check(arg[*i + 1]) == 0 || arg[*i
+						+ 1] == '$'))
 			{
 				arg = ft_check_var(arg, *i, 0);
-				*i += + g_global.exp_len;
+				*i += +g_global.exp_len;
 			}
 			else
 				(*i)++;
@@ -68,8 +68,8 @@ char	*ft_expand_var(char *arg, int ex)
 		i = ft_singl_qexp(arg, i, ex);
 		arg = ft_double_qexp(arg, &i);
 		i = ft_expand_condition(arg, i);
-		if (arg[i] == '$' && (ft_exp_check(arg[i + 1]) == 0
-				|| arg[i + 1] == '$'))
+		if (arg[i] == '$' && (ft_exp_check(arg[i + 1]) == 0 || arg[i
+					+ 1] == '$'))
 		{
 			arg = ft_check_var(arg, i, 1);
 			i = i + g_global.exp_len;

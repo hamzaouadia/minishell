@@ -6,7 +6,7 @@
 /*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 09:36:01 by aaouassa          #+#    #+#             */
-/*   Updated: 2023/06/24 20:20:22 by aaouassa         ###   ########.fr       */
+/*   Updated: 2023/06/25 03:24:27 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_free_herdocc(t_heredoc **heredocc)
 		(*heredocc) = (*heredocc)->next;
 		free(temp);
 	}
-    free(heredocc);
+	free(heredocc);
 }
 
 int	count_heredoc(t_commnd *cmd)

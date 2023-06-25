@@ -6,7 +6,7 @@
 /*   By: aaouassa <aaouassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 09:33:07 by aaouassa          #+#    #+#             */
-/*   Updated: 2023/06/24 16:04:51 by aaouassa         ###   ########.fr       */
+/*   Updated: 2023/06/25 03:26:26 by aaouassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ void	print_export(t_commnd *cmd, t_env *current)
 		while (current)
 		{
 			if (current->value)
-            {
-			    str_ = ft_strjoin(current->value, "\"");
-			    str_key = ft_strjoin(current->key, "=\"");
-			    str_var = ft_strjoin(str_key, str_);
+			{
+				str_ = ft_strjoin(current->value, "\"");
+				str_key = ft_strjoin(current->key, "=\"");
+				str_var = ft_strjoin(str_key, str_);
 				printf("declare -x %s\n", str_var);
-			    free (str_);
-		    	free (str_key);
-			    free (str_var);
-            }
+				free(str_);
+				free(str_key);
+				free(str_var);
+			}
 			else
 				printf("declare -x %s\n", current->key);
 			current = current->next;
@@ -90,8 +90,8 @@ void	export_plus_case(t_commnd *cmd, t_utils *utils, t_env *lst, int i)
 								ft_len(cmd->cmd[i], '\0')));
 				else
 					utils->current->value = ft_substr(cmd->cmd[i],
-							ft_len(cmd->cmd[i],
-								'=') + 1, ft_len(cmd->cmd[i], '\0'));
+							ft_len(cmd->cmd[i], '=') + 1, ft_len(cmd->cmd[i],
+								'\0'));
 			}
 			utils->current = utils->current->next;
 		}
