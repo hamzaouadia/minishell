@@ -93,7 +93,7 @@ t_env	*my_export(t_commnd *cmd, t_env *lst, t_utils *utils)
 	while (cmd->cmd[++utils->i])
 	{
 		if (errors_export(cmd, utils->c, utils->i) == 0)
-			continue ;
+            continue ;
 		utils->c = check_for_signe(cmd->cmd[utils->i], '=');
 		if (utils->c != -1)
 		{

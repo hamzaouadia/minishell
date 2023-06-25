@@ -49,6 +49,7 @@ t_commnd	*ft_transfer_cmd(t_command *command)
 	t_commnd	*cmd_head;
 	int			i;
 
+    
 	cmd = ft_new_cmd();
 	cmd_head = cmd;
 	while (command->next)
@@ -109,26 +110,20 @@ int	main(int ac, char **av, char **envp)
 	all->utils = malloc(sizeof(t_utils));
 	copy_env(envp, &lst);
 	all->lst = lst;
+	g_global.env = lst;
 	while (1)
 	{
-		g_global.en = nodes_counter(&lst);
 		signalsss(&readl);
 		add_history(readl);
 		readl = ft_expand_var(readl, 0);
-
 		if (!(command = ft_command(readl)))
-		{
-			ft_free_env(g_global.en);
 			continue ;
-		}
 		if (ft_clean_command(command) == -1)
 		{
 			ft_free_oldlist(command);
-			ft_free_env(g_global.en);
 			continue ;
 		}
 		cmd = ft_transfer_cmd(command);
-		//printf ("|%s|\n", cmd->cmd[1]);
 		ft_free_oldlist(command);
 		check_heredoc(cmd, &heredocc);
 		if (ft_lstsize_cmd(cmd) == 1)
@@ -140,9 +135,7 @@ int	main(int ac, char **av, char **envp)
 			close(heredocc->fd_pipe_heredoc);
 			heredocc = heredocc->next;
 		}
-		ft_free_env(g_global.en);
-		ft_free_cmd(cmd);
-		ft_free_herdocc(&heredocc);
+        ft_free_cmd(cmd);
 		heredocc = NULL;
 	}
 }

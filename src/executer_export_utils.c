@@ -23,16 +23,18 @@ void	print_export(t_commnd *cmd, t_env *current)
 		sort_export(current);
 		while (current)
 		{
-			str_key = ft_strjoin(current->key, "=");
-			str_ = ft_strjoin(current->value, "\"");
-			str_var = ft_strjoin(str_key, str_);
 			if (current->value)
+            {
+			    str_ = ft_strjoin(current->value, "\"");
+			    str_key = ft_strjoin(current->key, "=");
+			    str_var = ft_strjoin(str_key, str_);
 				printf("declare -x %s\n", str_var);
+			    free (str_);
+		    	free (str_key);
+			    free (str_var);
+            }
 			else
 				printf("declare -x %s\n", current->key);
-			free (str_);
-			free (str_key);
-			free (str_var);
 			current = current->next;
 		}
 	}

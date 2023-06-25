@@ -71,12 +71,7 @@ typedef struct utils
 
 typedef struct s_global
 {
-	char			*str1;
-	char			*str2;
-	char			*str3;
-	char			*str4;
 	int				exit_code;
-	char			**en;
 	char			*check;
 	t_env			*env;
 	int				exp_len;

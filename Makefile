@@ -1,7 +1,7 @@
 NAME = minishell
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror #-g -fsanitize=address -fno-omit-frame-pointer 
+CFLAGS = -Wall -Wextra -Werror #-g3 -fsanitize=address -fno-omit-frame-pointer 
 
 INC_DIR = include
 SRC_DIR = src

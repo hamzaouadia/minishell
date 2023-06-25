@@ -22,6 +22,7 @@ void	ft_free_herdocc(t_heredoc **heredocc)
 		(*heredocc) = (*heredocc)->next;
 		free(temp);
 	}
+    free(heredocc);
 }
 
 int	count_heredoc(t_commnd *cmd)
@@ -80,7 +81,6 @@ void	read_heredoc(char *delimit, t_heredoc **heredocc, int i, t_commnd *cmd)
 		write(fd[1], "\n", 1);
 		free(heredoc);
 	}
-	printf("***********\n");
 	close(fd[1]);
 	if (check_find_herdoc(&cmd, i))
 		close(fd[0]);

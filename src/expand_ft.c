@@ -77,27 +77,27 @@ char    *ft_check_var(char *arg, int i, int x)
 {
     int        j;
     int        k;
-    int        e;
+    t_env      *temp;
     char    *code;
 
-    e = 0;
-    while (g_global.en[e])
+    temp = g_global.env;
+    while (temp)
     {
         k = 0;
         j = i + 1;
-        while (arg[j] == g_global.en[e][k])
+        while (arg[j] == temp->key[k])
         {
-            if (g_global.en[e][k] == '=')
+            if (temp->key[k] == '\0')
                 break ;
             j++;
             k++;
         }
-        if (ft_exp_del(arg[j]) == 1 && g_global.en[e][k] == '=')
+        if (ft_exp_del(arg[j]) == 1 && temp->key[k] == '\0')
         {
-            arg = ft_new_arg(arg, i, g_global.en[e] + k + 1, x);
+            arg = ft_new_arg(arg, i, temp->value, x);
             return (arg);
         }
-        e++;
+        temp = temp->next;
     }
     if (arg[i + 1] == '?')
     {
@@ -108,31 +108,4 @@ char    *ft_check_var(char *arg, int i, int x)
     else if (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$')
         arg = ft_remove_var(arg, i);
     return (arg);
-}
-
-char	**nodes_counter(t_env **env)
-{
-	int		i;
-	t_env *tmp;
-	char	**en;
-
-	i = ft_env_len(env);
-	en = ft_calloc(i + 1, sizeof(char *));
-	i = 0;
-	tmp = *env;
-	while (tmp)
-	{
-		g_global.str1 = ft_strdup(tmp->value);
-		g_global.str2 = ft_strdup(tmp->key);
-		g_global.str3 = ft_strjoin(g_global.str2, "=");
-		g_global.str4 = ft_strjoin(g_global.str3, g_global.str1);
-		en[i++] = ft_strdup(g_global.str4);
-		tmp = tmp->next;
-		free(g_global.str1);
-		free(g_global.str2);
-		free(g_global.str3);
-		free(g_global.str4);
-	}
-	en[i] = NULL;
-	return (en);
 }
