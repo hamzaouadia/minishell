@@ -1,16 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mini_ftutils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: haouadia <haouadia@student.1337.ma>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/25 02:42:22 by haouadia          #+#    #+#             */
+/*   Updated: 2023/06/25 02:42:24 by haouadia         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_commnd	*ft_new_cmd(void)
 {
-	t_commnd	*cmnd;
+    t_commnd	*cmnd;
 
-	cmnd = malloc(sizeof(t_commnd));
-	if (!cmnd)
-		exit (0);
-	cmnd->cmd = NULL;
-	cmnd->file = NULL;
-	cmnd->next = NULL;
-	return (cmnd);
+    cmnd = malloc(sizeof(t_commnd));
+    if (!cmnd)
+        exit (0);
+    cmnd->cmd = NULL;
+    cmnd->file = NULL;
+    cmnd->next = NULL;
+    return (cmnd);
 }
 
 int	ft_count_arg(t_argument *argument)
