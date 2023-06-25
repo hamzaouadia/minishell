@@ -122,7 +122,7 @@ int	main(int ac, char **av, char **envp)
 	all->utils = malloc(sizeof(t_utils));
 	copy_env(envp, &lst);
 	all->lst = lst;
-	g_global.env = lst;
+	g_global.env = all->lst;
 	while (1)
 	{
 		signalsss(&readl);

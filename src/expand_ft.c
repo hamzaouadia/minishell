@@ -85,12 +85,26 @@ char	*ft_remove_var(char *arg, int i)
 	return (new);
 }
 
+char    *ft_check_cond(char *arg, int i)
+{
+    char *code;
+
+    if (arg[i + 1] == '?')
+    {
+        code = ft_itoa(g_global.exit_code);
+        arg = ft_new_arg(arg, i, code, 2);
+        free(code);
+    }
+    else if (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$')
+        arg = ft_remove_var(arg, i);
+    return (arg);
+}
+
 char    *ft_check_var(char *arg, int i, int x)
 {
     int        j;
     int        k;
     t_env      *temp;
-    char    *code;
 
     temp = g_global.env;
     while (temp)
@@ -111,13 +125,6 @@ char    *ft_check_var(char *arg, int i, int x)
         }
         temp = temp->next;
     }
-    if (arg[i + 1] == '?')
-    {
-        code = ft_itoa(g_global.exit_code);
-        arg = ft_new_arg(arg, i, code, 2);
-        free(code);
-    }
-    else if (ft_exp_check(arg[i + 1]) == 0 || arg[i + 1] == '$')
-        arg = ft_remove_var(arg, i);
+    arg = ft_check_cond(arg, i);
     return (arg);
 }

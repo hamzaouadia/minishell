@@ -26,7 +26,7 @@ void	print_export(t_commnd *cmd, t_env *current)
 			if (current->value)
             {
 			    str_ = ft_strjoin(current->value, "\"");
-			    str_key = ft_strjoin(current->key, "=");
+			    str_key = ft_strjoin(current->key, "=\"");
 			    str_var = ft_strjoin(str_key, str_);
 				printf("declare -x %s\n", str_var);
 			    free (str_);
